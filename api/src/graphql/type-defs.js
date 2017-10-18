@@ -19,11 +19,6 @@ type Question {
   date: Date
 }
 
-type QuestionsPage {
-  questions: [Question]
-  hasMore: Boolean
-}
-
 input QuestionsFilter {
   text: String
   answered: Boolean
@@ -35,7 +30,7 @@ input QuestionInput {
 }
 
 type Query {
-  questionsPage (pageIndex: Int!, pageSize: Int!, sort: String, filter: QuestionsFilter): QuestionsPage
+  questions (sort: String, filter: QuestionsFilter): [Question]
 }
 
 type Mutation {

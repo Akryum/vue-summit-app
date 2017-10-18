@@ -29,8 +29,8 @@ async function main () {
   })
 
   await db.collection('questions').createIndex({
-    name: 'text',
-    description: 'text',
+    title: 'text',
+    content: 'text',
   })
 
   const app = express()

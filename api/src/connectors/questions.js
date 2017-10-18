@@ -7,16 +7,28 @@ export function questions () {
 
 function generateSelector (filter, context) {
   const selector = {}
+  const fields = {
+    title: 1,
+    content: 1,
+    votes: 1,
+    votesList: 1,
+    date: 1,
+    userId: 1,
+  }
   if (filter) {
     if (typeof filter.text !== 'undefined') {
-      selector.$test = { $search: filter.text }
+      selector.$text = { $search: filter.text }
+      fields.score = { $meta: 'textScore' }
     }
 
     if (typeof filter.answered !== 'undefined') {
       selector.answered = filter.answered
     }
   }
-  return selector
+  return {
+    selector,
+    fields,
+  }
 }
 
 function processItem (item, context) {
@@ -24,13 +36,11 @@ function processItem (item, context) {
   item.hasVoted = context.user && item.votesList.includes(context.user.userId)
 }
 
-export async function getPage ({
-  pageIndex,
-  pageSize,
+export async function getMany ({
   sort,
   filter,
 }, context) {
-  const selector = generateSelector(filter, context)
+  const { selector, fields } = generateSelector(filter, context)
 
   let sortOption
   if (sort === 'text') {
@@ -44,10 +54,9 @@ export async function getPage ({
   const cursor = await questions().find(
     selector,
     {
+      fields,
       sort: sortOption,
-      skip: pageIndex,
-      limit: pageSize,
-    }
+    },
   )
   const items = await cursor.toArray()
 
@@ -55,13 +64,7 @@ export async function getPage ({
     processItem(item, context)
   }
 
-  const count = questions().count(selector)
-  const hasMore = count > pageIndex + items.length
-
-  return {
-    questions: items,
-    hasMore,
-  }
+  return items
 }
 
 export async function addOne ({ input }, context) {

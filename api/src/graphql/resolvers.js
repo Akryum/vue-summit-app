@@ -41,8 +41,8 @@ export default {
     },
   },
   Query: {
-    questionsPage: (root, args, context) => {
-      return Questions.getPage(args, context)
+    questions: (root, args, context) => {
+      return Questions.getMany(args, context)
     },
   },
   Mutation: {
