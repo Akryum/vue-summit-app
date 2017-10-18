@@ -1,0 +1,7 @@
+{
+  "name": "top-questions-api",
+  "alias": "top-question-api",
+  "env": {
+    "NEDB_PATH": "/tmp"
+  }
+}
