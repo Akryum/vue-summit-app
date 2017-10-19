@@ -14,7 +14,7 @@ export default {
   mounted () {
     this.$_timer = setInterval(() => {
       this.$forceUpdate()
-    })
+    }, 60 * 1000)
   },
 
   beforeDestroy () {

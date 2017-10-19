@@ -75,7 +75,7 @@ export async function getMany ({
 export async function addOne ({ input }, context) {
   const data = {
     title: input.title.substr(0, 60),
-    content: input.title.substr(0, 500),
+    content: input.content.substr(0, 500),
     votes: 0,
     votesList: [],
     answered: false,

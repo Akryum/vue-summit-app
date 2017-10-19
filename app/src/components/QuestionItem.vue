@@ -16,7 +16,7 @@
         <span class="title">{{ question.title }}</span>
       </div>
 
-      <div class="content">{{ question.content }}</div>
+      <div class="text">{{ question.content }}</div>
 
       <div class="info">
         <span class="author">by {{ question.user.name }}</span>
@@ -186,15 +186,26 @@ export default {
   @media (max-width: $small-screen)
     padding 12px
 
-  .title
-    font-size 1.4em
-    font-weight lighter
-
   .content
     margin 4px 0
-    white-space pre
+    margin-right 24px
     flex auto 1 1
     width 0
+
+    @media (max-width: $small-screen)
+      margin-right 12px
+
+    .title
+      font-size 1.4em
+      font-weight lighter
+
+    .text
+      white-space pre-pre-wrap
+      margin-bottom 6px
+
+    .title,
+    .text
+      word-wrap break-word
 
   .info
     color rgba($md-black, .5)
