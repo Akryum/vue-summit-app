@@ -1,0 +1,7 @@
+{
+  "name": "devfest-summit",
+  "alias": "devfest-summit",
+  "env": {
+    "ENDPOINT": "https://devfest-summit-api.now.sh"
+  }
+}

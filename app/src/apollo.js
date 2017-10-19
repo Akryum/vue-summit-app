@@ -35,9 +35,13 @@ export function createApolloClient ({ ssr, req }) {
     }
 
     // Create the subscription websocket client
-    const wsClient = new SubscriptionClient(ENDPOINT.replace(/^https?/i, 'ws') + '/subscriptions', {
-      reconnect: true,
-    })
+    const wsClient = new SubscriptionClient(
+      ENDPOINT.replace(/^https?/i, 'ws' + (process.env.NODE_ENV === 'production' ? 's' : '')) +
+      '/subscriptions',
+      {
+        reconnect: true,
+      }
+    )
 
     networkInterface = addGraphQLSubscriptions(
       networkInterface,

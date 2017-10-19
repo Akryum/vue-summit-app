@@ -1,4 +1,4 @@
-import { filterQuestion } from '../../../api/src/utils/filters'
+import { filterQuestion } from '../utils/filters'
 import QUESTIONS_QUERY from '../graphql/Questions.gql'
 
 export function cacheQuestionAddToList (list, { filter, sort }, item) {
