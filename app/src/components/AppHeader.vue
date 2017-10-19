@@ -121,6 +121,9 @@ export default {
     margin 0
     text-align left
 
+    @media (max-width: $small-screen)
+      font-size 1.2em
+
     .link
       box-center()
 
@@ -174,4 +177,9 @@ export default {
       .user-name
         font-size 12px
         margin-right 24px
+
+      .avatar,
+      .user-name
+        @media (max-width: $small-screen)
+          display none
 </style>

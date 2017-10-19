@@ -47,7 +47,7 @@
       </template>
 
       <div v-if="question.answered && !user.admin" class="answered">
-        <BaseIcon icon="done"/> Answered
+        <BaseIcon icon="done"/> <span class="lb">Answered</span>
       </div>
 
       <BaseButton
@@ -64,7 +64,7 @@
 
     <div v-else class="guest-info">
       <div v-if="question.answered" class="answered">
-        <BaseIcon icon="done"/> Answered
+        <BaseIcon icon="done"/> <span class="lb">Answered</span>
       </div>
 
       <div class="votes">
@@ -183,6 +183,9 @@ export default {
   h-box()
   align-items stretch
 
+  @media (max-width: $small-screen)
+    padding 12px
+
   .title
     font-size 1.4em
     font-weight lighter
@@ -190,7 +193,8 @@ export default {
   .content
     margin 4px 0
     white-space pre
-    flex 1
+    flex auto 1 1
+    width 0
 
   .info
     color rgba($md-black, .5)
@@ -206,6 +210,9 @@ export default {
     margin-right 24px
     margin-top 6px
 
+    @media (max-width: $small-screen)
+      margin-right 12px
+
   .actions,
   .guest-info
     h-box()
@@ -217,8 +224,15 @@ export default {
     >>> > div
       margin-left 24px
 
-    .answered
-      color $color-primary
+      @media (max-width: $small-screen)
+        margin-left 12px
+
+  .answered
+    color $color-primary
+
+    @media (max-width: $small-screen)
+      .lb
+        display none
 
   &:hover
     background $md-grey-100

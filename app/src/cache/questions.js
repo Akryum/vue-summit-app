@@ -1,14 +1,17 @@
+import { filterQuestion } from '../../../api/src/utils/filters'
 import QUESTIONS_QUERY from '../graphql/Questions.gql'
 
-export function cacheQuestionAddToList (list, { sort }, item) {
-  const index = list.findIndex(
-    i => i.id === item.id
-  )
-  if (index === -1) {
-    if (sort === 'newest') {
-      list.splice(0, 0, item)
-    } else {
-      list.push(item)
+export function cacheQuestionAddToList (list, { filter, sort }, item) {
+  if (filterQuestion(item, filter)) {
+    const index = list.findIndex(
+      i => i.id === item.id
+    )
+    if (index === -1) {
+      if (sort === 'newest') {
+        list.splice(0, 0, item)
+      } else {
+        list.push(item)
+      }
     }
   }
 }
@@ -41,6 +44,7 @@ export function cacheQuestionAdd (store, {
 
     // Transformation
     cacheQuestionAddToList(data.questions, {
+      filter,
       sort,
     }, item)
 

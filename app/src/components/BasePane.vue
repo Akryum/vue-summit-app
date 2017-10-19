@@ -70,6 +70,10 @@ export default {
     background $md-white
     v-box()
 
+    @media (max-width: $small-screen)
+      min-width 0
+      width 100vw
+
   .header
     padding 12px
     h-box()
