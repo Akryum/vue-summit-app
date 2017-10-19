@@ -1,4 +1,4 @@
-# GraphQL nodejs server
+# Vue + Apollo app
 
 ```
 yarn
