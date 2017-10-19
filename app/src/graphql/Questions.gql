@@ -1,0 +1,7 @@
+#import "./QuestionFragment.gql"
+
+query questions ($sort: String, $filter: QuestionsFilter) {
+  questions (sort: $sort, filter: $filter) {
+    ...Question
+  }
+}

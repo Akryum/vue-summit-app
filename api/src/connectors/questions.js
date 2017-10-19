@@ -12,6 +12,7 @@ function generateSelector (filter, context) {
     content: 1,
     votes: 1,
     votesList: 1,
+    answered: 1,
     date: 1,
     userId: 1,
   }
@@ -24,6 +25,10 @@ function generateSelector (filter, context) {
     if (typeof filter.answered !== 'undefined') {
       selector.answered = filter.answered
     }
+
+    // if (filter.mine && context.user) {
+    //   selector.userId = context.user.userId
+    // }
   }
   return {
     selector,
@@ -45,10 +50,10 @@ export async function getMany ({
   let sortOption
   if (sort === 'text') {
     sortOption = { score: { $meta: 'textScore' } }
-  } else if (sort === 'newest') {
+  } else if (sort === 'newer') {
     sortOption = { date: -1 }
   } else {
-    sortOption = { votes: -1 }
+    sortOption = { votes: -1, date: 1 }
   }
 
   const cursor = await questions().find(
@@ -69,7 +74,8 @@ export async function getMany ({
 
 export async function addOne ({ input }, context) {
   const data = {
-    ...input,
+    title: input.title.substr(0, 60),
+    content: input.title.substr(0, 500),
     votes: 0,
     votesList: [],
     answered: false,
@@ -135,8 +141,12 @@ export async function toggleAnswered ({ id }, context) {
 
 export async function removeOne ({ id }, context) {
   const oid = ObjectId(id)
+  const question = await questions().findOne({
+    _id: oid,
+  })
   await questions().deleteOne({
     _id: oid,
   })
-  return true
+  question && processItem(question, context)
+  return question
 }

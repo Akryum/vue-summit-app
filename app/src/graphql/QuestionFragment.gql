@@ -1,0 +1,14 @@
+fragment Question on Question {
+  id
+  title
+  content
+  votes
+  hasVoted
+  answered
+  date
+  user {
+    id
+    name
+    avatar
+  }
+}

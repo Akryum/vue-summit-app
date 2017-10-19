@@ -1,0 +1,7 @@
+mutation questionToggleVoted ($id: ID!) {
+  questionToggleVoted(id: $id) {
+    id
+    votes
+    hasVoted
+  }
+}

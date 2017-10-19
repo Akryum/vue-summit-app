@@ -1,0 +1,7 @@
+#import "./QuestionFragment.gql"
+
+subscription questionAdded ($filter: QuestionsFilter!) {
+  questionAdded (filter: $filter) {
+    ...Question
+  }
+}

@@ -30,13 +30,13 @@ export async function findOrCreate (data) {
   let result
   const user = await getById(data.userId)
   if (user) {
-    await users().updateOne({
-      _id: user._id,
-    }, data)
     result = {
       ...user,
       ...data,
     }
+    await users().updateOne({
+      _id: user._id,
+    }, result)
   } else {
     const { insertedId } = await users().insert({
       ...data,
