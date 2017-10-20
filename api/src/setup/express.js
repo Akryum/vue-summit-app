@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import cookieSession from 'cookie-session'
 import bodyParser from 'body-parser'
 import passport from 'passport'
+import compression from 'compression'
 
 // Apollo
 import { graphqlExpress, graphiqlExpress } from 'graphql-server-express'
@@ -52,6 +53,10 @@ function setupSession (app) {
   }))
   app.use(passport.initialize())
   app.use(passport.session())
+}
+
+function setupCompression (app) {
+  app.use(compression({ threshold: 0 }))
 }
 
 function setupGraphQL (app) {
@@ -119,6 +124,7 @@ export default async function () {
   setupCors(app)
   setupParsers(app)
   setupSession(app)
+  setupCompression(app)
   setupGraphQL(app)
   setupAuth(app)
 
