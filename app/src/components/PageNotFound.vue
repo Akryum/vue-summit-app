@@ -12,6 +12,12 @@
   </BasePage>
 </template>
 
+<script>
+export default {
+  name: 'not-found-page',
+}
+</script>
+
 <style lang="stylus" scoped>
 p
   text-align: center

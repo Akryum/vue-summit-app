@@ -26,6 +26,15 @@ export default context => {
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()
 
+      if (
+        matchedComponents.length === 0 ||
+        matchedComponents.some(
+          component => component.name === 'not-found-page'
+        )
+      ) {
+        context.httpCode = 404
+      }
+
       Promise.all([
         // Async data
         ...matchedComponents.map(Component => {

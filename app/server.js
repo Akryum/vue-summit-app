@@ -84,7 +84,7 @@ function renderApp (req, res) {
       console.error(`error during render : ${req.url}`)
       console.error(err.stack)
     }
-    res.send(html)
+    res.status(context.httpCode || 200).send(html)
   })
 }
 
