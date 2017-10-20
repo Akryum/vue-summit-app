@@ -4,6 +4,7 @@
   "env": {
     "NEDB_PATH": "/tmp",
     "CLIENT_ORIGIN": "https://devfest-summit.now.sh",
-    "PUBLIC_URL": "https://devfest-summit-api.now.sh"
+    "PUBLIC_URL": "https://devfest-summit-api.now.sh",
+    "COOKIE_DOMAIN": ".now.sh"
   }
 }

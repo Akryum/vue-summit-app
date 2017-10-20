@@ -1,15 +1,12 @@
 import express from 'express'
-import session from 'express-session'
-import NedbStore from 'nedb-session-store'
 import cors from 'cors'
+import cookieSession from 'cookie-session'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
-import uuid from 'uuid/v4'
 import { createServer } from 'http'
 import { graphqlExpress, graphiqlExpress } from 'graphql-server-express'
 import { getDb } from './utils/db'
 import passport from 'passport'
-import path from 'path'
 
 import './passport'
 
@@ -19,7 +16,7 @@ import { SubscriptionServer } from 'subscriptions-transport-ws'
 
 import schema from './graphql/schema'
 
-import { PORT, SUBSCRIPTIONS_PATH, CLIENT_ORIGIN, NEDB_PATH, SECRET } from './config'
+import { PORT, SUBSCRIPTIONS_PATH, CLIENT_ORIGIN, SECRET, COOKIE_DOMAIN } from './config'
 
 async function main () {
   const db = await getDb()
@@ -35,11 +32,6 @@ async function main () {
 
   const app = express()
 
-  const NedbSessionStore = NedbStore(session)
-  const sessionStore = new NedbSessionStore({
-    filename: path.join(NEDB_PATH, 'session-store.db'),
-  })
-
   app.use(cors({
     origin: CLIENT_ORIGIN,
     credentials: true,
@@ -50,17 +42,13 @@ async function main () {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
 
-  app.use(session({
-    genid: () => uuid(),
-    key: 'express.sid',
-    secret: SECRET,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 3 * 60 * 60 * 1000,
-      secure: process.env.NODE_ENV === 'production',
-    },
-    store: sessionStore,
+  app.use(cookieSession({
+    name: 'devfest-summit-session',
+    keys: [SECRET],
+    maxAge: 3 * 60 * 60 * 1000,
+    // secure: process.env.NODE_ENV === 'production',
+    secure: false,
+    domain: COOKIE_DOMAIN,
   }))
 
   app.use(passport.initialize())
