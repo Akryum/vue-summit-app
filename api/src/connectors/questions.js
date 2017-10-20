@@ -37,7 +37,7 @@ function generateSelector (filter, context) {
 }
 
 function processItem (item, context) {
-  item.id = item._id
+  item.id = item._id.toString()
   item.hasVoted = context.user && item.votesList.includes(context.user.userId)
 }
 

@@ -11,7 +11,7 @@ export function users () {
 }
 
 function processItem (item, context) {
-  item.id = item._id
+  item.id = item._id.toString()
 }
 
 export async function getById (id) {
