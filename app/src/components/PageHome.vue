@@ -9,26 +9,27 @@
       <BaseLoading
         v-if="loading"
         key="loading"
+        class="raised delay"
       />
-      <div
-        v-else
-        key="items"
-        class="items"
-      >
-        <div
-          v-if="questions.length === 0"
-          class="empty"
-        >
-          No questions yet.
-        </div>
-
-        <QuestionItem
-          v-for="question of questions"
-          :key="question.id"
-          :question="question"
-        />
-      </div>
     </transition>
+
+    <div
+      key="items"
+      class="items"
+    >
+      <div
+        v-if="questions.length === 0"
+        class="empty"
+      >
+        {{ emptyMessage }}
+      </div>
+
+      <QuestionItem
+        v-for="question of questions"
+        :key="question.id"
+        :question="question"
+      />
+    </div>
   </BasePage>
 </template>
 
@@ -132,7 +133,16 @@ export default {
     ...mapGetters('questions', [
       'requestFilter',
       'requestSort',
+      'searchText',
     ]),
+
+    emptyMessage () {
+      if (this.searchText) {
+        return 'No results found.'
+      } else {
+        return 'No questions yet.'
+      }
+    },
   },
 
   methods: {
@@ -147,8 +157,10 @@ export default {
 @import "../styles/imports"
 
 .base-loading
-  height 200px
-  margin-bottom: -200px
+  position fixed
+  top 12px
+  left 0
+  right 0
 
 .toolbar
   margin-bottom 24px

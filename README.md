@@ -16,6 +16,7 @@ The [frontend app](./app) is using Vue and Apollo GraphQL. It features:
 - Full Server-Side Rendering
 - GraphQL data with Apollo
 - Real-time updates with GraphQL Subscriptions
+- Full-text instant search
 - Specific 'Server Error' component rendered on the server
 - Stylus for the component styling
 

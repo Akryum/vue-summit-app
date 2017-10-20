@@ -14,20 +14,20 @@ export default {
     requestFilter: state => {
       let filter = {}
 
-      switch (state.filter) {
-        case 'new':
-          filter.answered = false
-          break
-        case 'answered':
-          filter.answered = true
-          break
-        // case 'mine':
-        //   filter.mine = true
-        //   break
-      }
-
       if (state.searchText) {
         filter.text = state.searchText
+      } else {
+        switch (state.filter) {
+          case 'new':
+            filter.answered = false
+            break
+          case 'answered':
+            filter.answered = true
+            break
+          // case 'mine':
+          //   filter.mine = true
+          //   break
+        }
       }
 
       return filter

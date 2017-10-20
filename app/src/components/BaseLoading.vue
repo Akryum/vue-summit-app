@@ -1,6 +1,8 @@
 <template>
   <div class="base-loading">
-    <div class="spinner"></div>
+    <div class="wrapper">
+      <div class="spinner"></div>
+    </div>
   </div>
 </template>
 
@@ -10,6 +12,9 @@
 .base-loading
   flex-box()
   box-center()
+
+  .wrapper
+    display inline-block
 
   .spinner
     width 24px
@@ -25,6 +30,17 @@
     bottom 0
     left 0
     right 0
+
+  &.raised
+    .wrapper
+      background $md-white
+      padding 12px
+      border-radius 50%
+      box-shadow 0 5px 30px rgba(black, .1)
+
+  &.delay
+    &.fade-enter-active
+      transition-delay .5s
 
 @keyframes spinner
   0%
