@@ -8,10 +8,13 @@ The [api](./api) uses apollo graphql tools and an express server.
 
 The [app](./app) is using Vue and Apollo GraphQL. It features:
 
-- Google Sign in
-- Server-Side Rendering
-- GraphQL data
-- Real-time updates
-- Specific 'Server Error' component
+- Routing with vue-router
+- State management with vuex
+- Google Signin (OAuth)
+- Full Server-Side Rendering
+- GraphQL data with Apollo
+- Real-time updates with GraphQL Subscriptions
+- Specific 'Server Error' component rendered on the server
+- Stylus for the component styling
 
-This application was intially made for the DEvfest Nantes 2017 conference.
+This application was intially made for the Devfest Nantes 2017 conference.
