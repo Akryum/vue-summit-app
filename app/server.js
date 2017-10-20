@@ -3,13 +3,15 @@ const { createBundleRenderer } = require('vue-server-renderer')
 const fs = require('fs')
 const path = require('path')
 const favicon = require('serve-favicon')
+const LRU = require('lru-cache')
+const compression = require('compression')
 
 const isProd = process.env.NODE_ENV === 'production'
 const resolve = file => path.resolve(__dirname, file)
 const templatePath = resolve('./index.template.html')
 
 // Create Express server app
-const server = express()
+const app = express()
 
 // Vue bundle renderer
 let renderer
@@ -18,6 +20,10 @@ let renderer
 let readyPromise
 
 const defaultRendererOptions = {
+  cache: LRU({
+    max: 1000,
+    maxAge: 1000 * 60 * 15,
+  }),
   runInNewContext: false,
   inject: false,
 }
@@ -41,7 +47,7 @@ if (isProd) {
   // and create a new renderer on bundle / index template update.
   const setupDevServer = require('./build/setup-dev-server')
   readyPromise = setupDevServer({
-    server,
+    server: app,
     templatePath,
     onUpdate: (bundle, options) => {
       // Re-create the bundle renderer
@@ -59,12 +65,15 @@ const serve = (path, cache) => express.static(resolve(path), {
 })
 
 // Serve static files
-server.use(favicon('./public/favicon.png'))
-server.use('/dist', serve('./dist', true))
-server.use('/public', serve('./public', true))
+app.use(compression({ threshold: 0 }))
+app.use(favicon('./public/favicon.png'))
+app.use('/dist', serve('./dist', true))
+app.use('/public', serve('./public', true))
 
 // Render the Vue app using the bundle renderer
 function renderApp (req, res) {
+  res.setHeader('Content-Type', 'text/html')
+
   const context = {
     req,
   }
@@ -90,10 +99,10 @@ if (isProd) {
     readyPromise.then(() => renderApp(req, res))
   }
 }
-server.get('*', ssr)
+app.get('*', ssr)
 
 // Listening
 const port = process.env.PORT || 8080
-server.listen(port, () => {
-  console.log(`server started at localhost:${port}`)
+app.listen(port, () => {
+  console.log(`Server started at localhost:${port}`)
 })

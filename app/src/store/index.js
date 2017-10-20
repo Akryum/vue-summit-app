@@ -13,7 +13,7 @@ export function createStore () {
 
     actions: {
       init () {
-        console.log('store init')
+        // Implement this root action in module
       },
     },
 
@@ -24,6 +24,7 @@ export function createStore () {
     },
   })
 
+  // Webpack HRM
   if (module.hot) {
     module.hot.accept([
       './questions',

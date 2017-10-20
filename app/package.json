@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "apollo-client": "^1.9.3",
+    "compression": "^1.7.1",
     "express": "^4.16.2",
     "moment": "2.19.1",
     "node-fetch": "^1.7.3",
+    "lru-cache": "^4.1.1",
     "serve-favicon": "^2.4.5",
     "subscriptions-transport-ws": "^0.8.3",
     "v-tooltip": "^2.0.0-rc.2",
