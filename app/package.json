@@ -6,9 +6,10 @@
   "private": true,
   "scripts": {
     "dev": "node server",
-    "build": "rimraf dist && npm run build:client && npm run build:server",
+    "build": "rimraf dist && npm run build:client && npm run build:server && npm run build:error",
     "build:client": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.client.config.js",
     "build:server": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.server.config.js",
+    "build:error": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.error.config.js",
     "start": "cross-env NODE_ENV=production node server",
     "eslint": "eslint --ext .js,.jsx,.vue src --fix"
   },

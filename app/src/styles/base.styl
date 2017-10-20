@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
+@import "./imports";
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.material-icons {
+  font-size: inherit;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  display: inline-block;
+  cursor: inherit;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    color: lighten($color-primary, 30%);
+  }
+}
+
+h1 {
+  color: $color-primary;
+  margin-top: 0;
+  font-weight: lighter;
+  font-size: 2.2em;
+  text-align: center;
+}
+
+h2,
+h3 {
+  color: darken($color-primary, 5%);
+  font-weight: normal;
+  margin: 16px 0;
+}
+
+button,
+input,
+textarea {
+  font-size: inherit;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  transition border-bottom .15s
+}
