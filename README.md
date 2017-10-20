@@ -4,9 +4,11 @@
 
 <h1 align="center">Summit</h1>
 
-The [api](./api) uses apollo graphql tools and an express server.
+> Ask questions to the speaker and upvote them!
 
-The [app](./app) is using Vue and Apollo GraphQL. It features:
+The [backend api](./api) uses Apollo GraphQL tools and an express nodejs server.
+
+The [frontend app](./app) is using Vue and Apollo GraphQL. It features:
 
 - Routing with vue-router
 - State management with vuex
