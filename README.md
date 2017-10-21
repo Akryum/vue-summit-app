@@ -14,8 +14,9 @@ The [frontend app](./app) is using Vue and Apollo GraphQL. It features:
 - State management with vuex
 - Google Signin (OAuth)
 - Full Server-Side Rendering
-- GraphQL data with Apollo
+- GraphQL data with [Apollo](https://www.apollodata.com/)
 - Real-time updates with GraphQL Subscriptions
+- Monitoring with [Apollo Optics](https://www.apollodata.com/optics/)
 - Full-text instant search
 - Specific 'Server Error' component rendered on the server
 - Stylus for the component styling

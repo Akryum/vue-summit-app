@@ -15,6 +15,9 @@ import { graphqlExpress, graphiqlExpress } from 'graphql-server-express'
 import { execute, subscribe } from 'graphql'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
 
+// Apollo Optics
+import OpticsAgent from 'optics-agent'
+
 // GraphQL Executable Schema
 import schema from '../graphql/schema'
 
@@ -60,6 +63,8 @@ function setupCompression (app) {
 }
 
 function setupGraphQL (app) {
+  app.use(OpticsAgent.middleware())
+
   app.use('/graphql', graphqlExpress(req => {
     return ({
       schema,
@@ -67,6 +72,8 @@ function setupGraphQL (app) {
       context: {
         // Current user
         user: req.user,
+        // Apollo Optics
+        opticsContext: OpticsAgent.context(req),
       },
     })
   }))
