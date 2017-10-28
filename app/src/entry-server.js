@@ -12,12 +12,16 @@ export default context => {
     })
 
     // Preload the user
-    const result = await apolloProvider.defaultClient.query({
-      query: USER_QUERY,
-    })
-    const user = result.data.currentUser
-    if (user) {
-      store.commit('user/user', user)
+    try {
+      const result = await apolloProvider.defaultClient.query({
+        query: USER_QUERY,
+      })
+      const user = result.data.currentUser
+      if (user) {
+        store.commit('user/user', user)
+      }
+    } catch (e) {
+      console.error(e)
     }
 
     // Update route

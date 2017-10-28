@@ -49,6 +49,7 @@ module.exports = {
     alias: {
       'public': path.resolve(__dirname, '../public'),
     },
+    symlinks: false,
   },
   devServer: {
     historyApiFallback: true,

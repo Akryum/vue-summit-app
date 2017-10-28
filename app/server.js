@@ -123,7 +123,7 @@ if (isProd) {
   // In development: wait for webpack compilation
   // when receiving a SSR request
   ssr = (req, res) => {
-    readyPromise.then(() => renderApp(req, res))
+    readyPromise.then(() => renderApp(req, res)).catch(console.error)
   }
 }
 app.get('*', ssr)
