@@ -1,10 +1,4 @@
 import { db } from '../utils/db'
-import LRU from 'lru-cache'
-
-const cache = new LRU({
-  max: 500,
-  maxAge: 1000 * 60 * 15,
-})
 
 export function users () {
   return db.collection('users')
@@ -15,14 +9,10 @@ function processItem (item, context) {
 }
 
 export async function getById (id) {
-  let user = cache.get(id)
-  if (!user) {
-    user = await users().findOne({
-      userId: id,
-    })
-    user && processItem(user)
-    cache.set(id, user)
-  }
+  const user = await users().findOne({
+    userId: id,
+  })
+  user && processItem(user)
   return user
 }
 

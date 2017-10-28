@@ -9,14 +9,14 @@ import passport from 'passport'
 import compression from 'compression'
 
 // Apollo
-import { graphqlExpress, graphiqlExpress } from 'graphql-server-express'
+import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 
 // Apollo Subs
 import { execute, subscribe } from 'graphql'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
 
-// Apollo Optics
-import OpticsAgent from 'optics-agent'
+// Apollo Engine (Monitoring, Caching, Errors reporting)
+import { Engine } from 'apollo-engine'
 
 // GraphQL Executable Schema
 import schema from '../graphql/schema'
@@ -29,7 +29,30 @@ import {
   SECRET,
   COOKIE_DOMAIN,
   PUBLIC_URL,
+  ENGINE_KEY,
+  GRAPHQL_ENDPOINT,
+  GRAPHIQL_ENDPOINT,
 } from '../config'
+
+const subscriptionsEndpoint = `ws${PUBLIC_URL.replace('http', '')}${SUBSCRIPTIONS_PATH}`
+
+function setupEngine (app) {
+  const engine = new Engine({
+    engineConfig: {
+      apiKey: ENGINE_KEY,
+      logging: {
+        level: process.env.NODE_ENV === 'production' ? 'WARN' : 'INFO',
+      },
+    },
+    graphqlPort: PORT,
+    endpoint: GRAPHQL_ENDPOINT,
+    // dumpTraffic: process.env.NODE_ENV !== 'production',
+  })
+
+  engine.start()
+
+  app.use(engine.expressMiddleware())
+}
 
 function setupCors (app) {
   app.use(cors({
@@ -63,23 +86,23 @@ function setupCompression (app) {
 }
 
 function setupGraphQL (app) {
-  app.use(OpticsAgent.middleware())
-
-  app.use('/graphql', graphqlExpress(req => {
+  app.use(GRAPHQL_ENDPOINT, graphqlExpress(req => {
     return ({
       schema,
       // Set the context for all resolvers
       context: {
         // Current user
         user: req.user,
-        // Apollo Optics
-        opticsContext: OpticsAgent.context(req),
       },
+      // Apollo Engine flags
+      tracing: true,
+      cacheControl: true,
     })
   }))
 
-  app.use('/graphiql', graphiqlExpress({
-    endpointURL: '/graphql',
+  app.use(GRAPHIQL_ENDPOINT, graphiqlExpress({
+    endpointURL: GRAPHQL_ENDPOINT,
+    subscriptionsEndpoint,
   }))
 }
 
@@ -113,7 +136,8 @@ function setupAuth (app) {
 }
 
 function setupGraphQLSubs (server) {
-  SubscriptionServer.create(
+  // eslint-disable-next-line no-new
+  new SubscriptionServer(
     {
       schema,
       execute,
@@ -128,6 +152,7 @@ function setupGraphQLSubs (server) {
 
 export default async function () {
   const app = express()
+  setupEngine(app) // Engine needs to be applied first (it's a proxy)
   setupCors(app)
   setupParsers(app)
   setupSession(app)
@@ -136,10 +161,11 @@ export default async function () {
   setupAuth(app)
 
   const server = createServer(app)
-  setupGraphQLSubs(server)
 
   server.listen(PORT, () => {
+    setupGraphQLSubs(server)
+
     console.log(`API Server is now running on http://${PUBLIC_URL}/graphql`)
-    console.log(`API Subscriptions server is now running on ws://${PUBLIC_URL}${SUBSCRIPTIONS_PATH}`)
+    console.log(`API Subscriptions server is now running on ${subscriptionsEndpoint}`)
   })
 }

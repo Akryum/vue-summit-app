@@ -1,7 +1,7 @@
 export default [`
 scalar Date
 
-type User {
+type User @cacheControl(maxAge: 300) {
   id: ID!
   name: String!
   avatar: String!
