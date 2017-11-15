@@ -1,0 +1,10 @@
+{
+  "include": [
+    "src"
+  ],
+  "compilerOptions": {
+    // This is buggy
+    // "target": "es2015",
+    // "checkJs": true
+  }
+}

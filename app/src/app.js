@@ -5,7 +5,7 @@ import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
 import * as filters from './filters'
-import './components'
+import './register-components'
 import VueApollo from 'vue-apollo'
 import { createApolloClient } from './apollo'
 

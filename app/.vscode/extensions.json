@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "christian-kohler.path-intellisense",
+    "octref.vetur",
+    "sysoev.language-stylus"
+  ]
+}
