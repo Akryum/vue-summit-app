@@ -11,3 +11,8 @@ createApp({
   // Mount the app into the page
   app.$mount('#app')
 })
+
+// service worker
+if (location.protocol === 'https:' && navigator.serviceWorker) {
+  navigator.serviceWorker.register('/service-worker.js')
+}

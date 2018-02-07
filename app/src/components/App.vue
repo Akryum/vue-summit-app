@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <AppHeader />
-    <router-view />
-    <AppFooter />
+    <AppHeader/>
+    <router-view/>
+    <AppFooter/>
 
     <transition name="right-pane" duration="800">
-      <QuestionAddPane v-if="showAddQuestion" />
+      <QuestionAddPane v-if="showAddQuestion"/>
     </transition>
   </div>
 </template>

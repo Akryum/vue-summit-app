@@ -13,3 +13,4 @@ export const SUBSCRIPTIONS_PATH = process.env.SUBSCRIPTIONS_PATH || '/subscripti
 export const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined
 export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || '/graphql'
 export const GRAPHIQL_ENDPOINT = process.env.GRAPHIQL_ENDPOINT || '/graphiql'
+export const DB_NAME = process.env.DB_NAME || 'devfest-nantes-2017'

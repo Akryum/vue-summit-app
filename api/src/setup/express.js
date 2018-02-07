@@ -43,6 +43,26 @@ function setupEngine (app) {
       logging: {
         level: process.env.NODE_ENV === 'production' ? 'WARN' : 'INFO',
       },
+      'stores': [
+        {
+          'name': 'publicResponseCache',
+          'inMemory': {
+            'cacheSize': 10485760,
+          },
+        },
+        {
+          'name': 'persistedQueries',
+          'inMemory': {
+            'cacheSize': 5000000,
+          },
+        },
+      ],
+      'queryCache': {
+        'publicFullQueryStore': 'publicResponseCache',
+      },
+      'persistedQueries': {
+        'store': 'persistedQueries',
+      },
     },
     graphqlPort: PORT,
     endpoint: GRAPHQL_ENDPOINT,

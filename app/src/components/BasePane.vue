@@ -1,6 +1,6 @@
 <template>
   <div class="base-pane">
-    <div class="background" @click="close"></div>
+    <div class="background" @click="close"/>
     <div class="pane">
       <div class="header">
         <div v-if="title" class="title">
@@ -8,7 +8,7 @@
             v-if="icon"
             class="icon material-icons"
             v-text="icon"
-          ></i>
+          />
           {{ title }}
         </div>
         <BaseButton
@@ -18,10 +18,10 @@
         />
       </div>
       <div class="content">
-        <slot />
+        <slot/>
       </div>
       <div class="footer">
-        <slot name="footer" />
+        <slot name="footer"/>
       </div>
     </div>
   </div>

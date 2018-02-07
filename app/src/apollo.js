@@ -5,6 +5,7 @@ import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
+import { createPersistedQueryLink } from 'apollo-link-persisted-queries'
 import VueApollo from 'vue-apollo'
 import { ENDPOINT } from './config'
 
@@ -15,16 +16,18 @@ Vue.use(VueApollo)
 export function createApolloClient ({ ssr, req }) {
   let link
 
-  const httpLink = new HttpLink({
-    // You should use an absolute URL here
-    uri: ENDPOINT + '/graphql',
-    credentials: 'include',
-    ...(ssr ? {
-      headers: {
-        cookie: req.header('Cookie'),
-      },
-    } : {}),
-  })
+  const httpLink = createPersistedQueryLink().concat(
+    new HttpLink({
+      // You should use an absolute URL here
+      uri: ENDPOINT + '/graphql',
+      credentials: 'include',
+      ...(ssr ? {
+        headers: {
+          cookie: req.header('Cookie'),
+        },
+      } : {}),
+    })
+  )
 
   const cache = new InMemoryCache()
 

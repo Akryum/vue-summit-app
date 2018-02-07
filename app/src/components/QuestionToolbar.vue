@@ -18,7 +18,7 @@
         class="search-input input"
         placeholder="Search"
         @keyup.esc="closeSearch"
-      />
+      >
     </div>
     <div
       v-else

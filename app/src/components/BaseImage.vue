@@ -7,7 +7,7 @@
         class="img"
         :src="src"
         @load="loaded = true"
-      />
+      >
     </transition>
   </div>
 </template>

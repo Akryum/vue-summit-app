@@ -35,7 +35,7 @@ input QuestionInput {
 
 type Query {
   # Currently logged user data
-  currentUser: User
+  currentUser: User @cacheControl(maxAge: 0)
   # Retrieves all the questions that matches the filter if any
   questions (sort: String, filter: QuestionsFilter): [Question]
 }

@@ -7,7 +7,7 @@
         v-if="question.user.avatar"
         class="img"
         :src="question.user.avatar"
-      />
+      >
     </div>
 
     <!-- Question content -->
@@ -21,7 +21,7 @@
       <div class="info">
         <span class="author">by {{ question.user.name }}</span>
         <span class="date">
-          <BaseIcon icon="schedule" />
+          <BaseIcon icon="schedule"/>
           <BaseTimeAgo :date="question.date"/>
         </span>
       </div>

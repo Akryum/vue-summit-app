@@ -79,6 +79,9 @@ app.use(compression({ threshold: 0 }))
 app.use(favicon('./public/favicon.png'))
 app.use('/dist', serve('./dist', true))
 app.use('/public', serve('./public', true))
+// PWA
+app.use('/manifest.json', serve('./manifest.json', true))
+app.use('/service-worker.js', serve('./dist/service-worker.js'))
 
 // Render the Vue app using the bundle renderer
 function renderApp (req, res) {

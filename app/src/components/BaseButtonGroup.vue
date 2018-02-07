@@ -1,18 +1,39 @@
 <template>
   <div class="base-button-group">
-    <slot></slot>
+    <slot/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'base-button-group',
+  name: 'BaseButtonGroup',
+
+  provide () {
+    return {
+      buttonGroupChildData: this.childData,
+      buttonGroupOnChange: this.handleValueChange,
+    }
+  },
 
   props: {
     value: {},
     unSelectable: {
       type: Boolean,
       default: false,
+    },
+  },
+
+  data () {
+    return {
+      childData: {
+        value: this.value,
+      },
+    }
+  },
+
+  watch: {
+    value (value) {
+      this.childData.value = value
     },
   },
 

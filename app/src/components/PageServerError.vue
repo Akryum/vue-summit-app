@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page page-server-error">
     <div class="header">
-      <img class="logo" src="public/logo-simple.svg" />
+      <img class="logo" src="public/logo-simple.svg">
       <h1>Summit</h1>
     </div>
 

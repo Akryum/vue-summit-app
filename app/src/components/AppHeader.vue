@@ -3,7 +3,7 @@
     <div v-if="!user" class="content guest">
       <h1 class="app-name">
         <router-link class="link" :to="{ name: 'home' }">
-          <img class="img" src="public/logo-simple.svg" />
+          <img class="img" src="public/logo-simple.svg">
           <span>Summit</span>
         </router-link>
       </h1>
@@ -23,7 +23,7 @@
     <div v-else class="content signed">
       <h1 class="app-name">
         <router-link class="link" :to="{ name: 'home' }">
-          <img class="img" src="public/logo-simple.svg" />
+          <img class="img" src="public/logo-simple.svg">
           <span>Summit</span>
         </router-link>
       </h1>
@@ -34,7 +34,7 @@
             v-if="user.avatar"
             class="img"
             :src="user.avatar"
-          />
+          >
         </div>
         <div class="user-name">{{ user.name }}</div>
         <BaseButton
@@ -59,6 +59,10 @@ export default {
     ...mapGetters('user', [
       'user',
     ]),
+  },
+
+  beforeDestroy () {
+    window.removeEventListener('message', this.handleMessage)
   },
 
   methods: {
@@ -98,10 +102,6 @@ export default {
       })
       this.setUser(result.data.currentUser)
     },
-  },
-
-  beforeDestroy () {
-    window.removeEventListener('message', this.handleMessage)
   },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="base-loading">
     <div class="wrapper">
-      <div class="spinner"></div>
+      <div class="spinner"/>
     </div>
   </div>
 </template>

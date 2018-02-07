@@ -13,17 +13,17 @@
           placeholder="Title"
           required
           maxlength="60"
-        />
+        >
       </div>
 
       <textarea
-       v-model="content"
-       class="content-input"
-       placeholder="Content"
-       required
-       maxlength="500"
-       rows="8"
-      ></textarea>
+        v-model="content"
+        class="content-input"
+        placeholder="Content"
+        required
+        maxlength="500"
+        rows="8"
+      />
     </div>
 
     <div slot="footer" class="pane-footer">

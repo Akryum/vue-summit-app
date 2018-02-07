@@ -1,0 +1,16 @@
+{
+  "name": "Summit",
+  "short_name": "Summit",
+  "icons": [
+    {
+      "src": "/public/favicon.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#41b88f",
+  "display": "standalone",
+  "theme_color": "#41b88f",
+  "description": "Post your questions. Get Answers."
+}

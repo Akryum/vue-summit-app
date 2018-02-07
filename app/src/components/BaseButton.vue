@@ -11,7 +11,7 @@
     />
 
     <span class="content">
-      <slot />
+      <slot/>
     </span>
 
     <div
@@ -25,6 +25,11 @@
 
 <script>
 export default {
+  inject: {
+    buttonGroupChildData: { default: undefined },
+    buttonGroupOnChange: { default: undefined },
+  },
+
   props: {
     icon: {
       type: String,
@@ -44,9 +49,12 @@ export default {
   computed: {
     cssClass () {
       return {
-        selected: this.$parent.$options.name === 'base-button-group' &&
-          this.$parent.value === this.value,
+        selected: this.selected,
       }
+    },
+
+    selected () {
+      return this.buttonGroupChildData && this.buttonGroupChildData.value === this.value
     },
   },
 
@@ -54,8 +62,8 @@ export default {
     onClick (e) {
       this.$emit('click', e)
 
-      if (typeof this.$parent.handleValueChange === 'function') {
-        this.$parent.handleValueChange(this.value)
+      if (typeof this.buttonGroupOnChange === 'function') {
+        this.buttonGroupOnChange(this.value)
       }
     },
   },
