@@ -31,6 +31,7 @@ import {
   CLIENT_ORIGIN,
   SECRET,
   COOKIE_DOMAIN,
+  COOKIE_NAME,
   PUBLIC_URL,
   ENGINE_KEY,
   GRAPHQL_ENDPOINT,
@@ -93,7 +94,7 @@ function setupParsers (app) {
 
 function setupSession (app) {
   app.use(cookieSession({
-    name: 'devfest-summit-session',
+    name: COOKIE_NAME,
     keys: [SECRET],
     maxAge: 3 * 60 * 60 * 1000,
     // secure: process.env.NODE_ENV === 'production',
@@ -119,7 +120,7 @@ function setupGraphQL (app) {
       },
       // Apollo Engine flags
       tracing: true,
-      cacheControl: true,
+      cacheControl: false,
     })
   }))
 
@@ -132,6 +133,8 @@ function setupGraphQL (app) {
 function setupAuth (app) {
   app.get('/logout', (req, res) => {
     req.logout()
+    res.clearCookie(COOKIE_NAME)
+    res.clearCookie(`${COOKIE_NAME}.sig`)
     res.redirect(CLIENT_ORIGIN)
   })
 

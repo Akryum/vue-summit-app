@@ -17,7 +17,6 @@ export default context => {
         query: USER_QUERY,
       })
       const user = result.data.currentUser
-      console.log(user)
       if (user) {
         store.commit('user/user', user)
       }

@@ -1,7 +1,7 @@
 export default [`
 scalar Date
 
-type User @cacheControl(maxAge: 300) {
+type User {
   id: ID!
   name: String!
   avatar: String!
@@ -18,7 +18,7 @@ type Question {
   hasVoted: Boolean
   # Indicates if the question has been answered by the speaker.
   answered: Boolean
-  user: User
+  user: User @cacheControl(maxAge: 300)
   date: Date
 }
 
@@ -35,7 +35,7 @@ input QuestionInput {
 
 type Query {
   # Currently logged user data
-  currentUser: User @cacheControl(maxAge: 0)
+  currentUser: User
   # Retrieves all the questions that matches the filter if any
   questions (sort: String, filter: QuestionsFilter): [Question]
 }

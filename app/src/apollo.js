@@ -16,8 +16,6 @@ Vue.use(VueApollo)
 export function createApolloClient ({ ssr, req }) {
   let link
 
-  console.log(req.header('Cookie'))
-
   const httpLink = createPersistedQueryLink().concat(
     new HttpLink({
       // You should use an absolute URL here
