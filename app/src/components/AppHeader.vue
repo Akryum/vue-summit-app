@@ -52,7 +52,6 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { ENDPOINT } from '../config'
-import USER_QUERY from '../graphql/CurrentUser.gql'
 
 export default {
   computed: {
@@ -75,32 +74,8 @@ export default {
     ]),
 
     openAuthWindow () {
-      if (!this.messageListener) {
-        window.addEventListener('message', this.handleMessage)
-        this.messageListener = true
-      }
-
       const url = `${ENDPOINT}/auth/google`
-      const name = 'google_login'
-      const specs = 'width=500,height=500'
-      window.open(url, name, specs)
-    },
-
-    handleMessage ({data, origin}) {
-      if (origin !== ENDPOINT) {
-        return
-      }
-      if (data === 'success') {
-        this.login()
-      }
-    },
-
-    async login () {
-      const result = await this.$apollo.query({
-        query: USER_QUERY,
-        fetchPolicy: 'network-only',
-      })
-      this.setUser(result.data.currentUser)
+      document.location = url
     },
   },
 }

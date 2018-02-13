@@ -132,29 +132,20 @@ function setupGraphQL (app) {
 function setupAuth (app) {
   app.get('/logout', (req, res) => {
     req.logout()
-    res.status(200)
+    res.redirect(CLIENT_ORIGIN)
   })
 
   app.get('/auth/google', passport.authenticate(
     'google',
     {
       scope: ['https://www.googleapis.com/auth/plus.login'],
-      display: 'popup',
     }
   ))
 
   app.get('/auth/google/callback', passport.authenticate(
     'google',
   ), (req, res) => {
-    res.send(`<html>
-    <body>
-      <script>
-        window.opener.postMessage('success', '${CLIENT_ORIGIN}')
-        window.close()
-      </script>
-      Success!
-    </body>
-    </html>`)
+    res.redirect(CLIENT_ORIGIN)
   })
 }
 
@@ -188,7 +179,7 @@ export default async function () {
   server.listen(PORT, () => {
     setupGraphQLSubs(server)
 
-    console.log(`API Server is now running on http://${PUBLIC_URL}/${GRAPHQL_ENDPOINT}`)
+    console.log(`API Server is now running on http://${PUBLIC_URL}${GRAPHQL_ENDPOINT}`)
     console.log(`API Subscriptions server is now running on ${subscriptionsEndpoint}`)
   })
 }

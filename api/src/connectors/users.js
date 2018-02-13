@@ -26,7 +26,9 @@ export async function findOrCreate (data) {
     }
     await users().updateOne({
       _id: user._id,
-    }, result)
+    }, {
+      $set: data,
+    })
   } else {
     const { insertedId } = await users().insert({
       ...data,

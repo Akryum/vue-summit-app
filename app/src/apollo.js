@@ -16,6 +16,8 @@ Vue.use(VueApollo)
 export function createApolloClient ({ ssr, req }) {
   let link
 
+  console.log(req.header('Cookie'))
+
   const httpLink = createPersistedQueryLink().concat(
     new HttpLink({
       // You should use an absolute URL here
@@ -44,7 +46,7 @@ export function createApolloClient ({ ssr, req }) {
     // Create the subscription websocket link
     const wsLink = new WebSocketLink({
       uri: ENDPOINT.replace(/^https?/i, 'ws' + (process.env.NODE_ENV === 'production' ? 's' : '')) +
-      '/subscriptions',
+      '/graphql',
       options: {
         reconnect: true,
       },
