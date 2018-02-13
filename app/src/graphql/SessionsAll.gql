@@ -1,0 +1,7 @@
+#import "./SessionFragment.gql"
+
+query sessionsAll {
+  sessionsAll {
+    ...Session
+  }
+}

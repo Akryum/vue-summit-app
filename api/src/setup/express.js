@@ -169,8 +169,8 @@ function setupGraphQLSubs (server) {
 
 export default async function () {
   const app = express()
-  setupEngine(app) // Engine needs to be applied first (it's a proxy)
   setupCors(app)
+  setupEngine(app) // Engine needs to be applied first (it's a proxy)
   setupParsers(app)
   setupSession(app)
   setupCompression(app)

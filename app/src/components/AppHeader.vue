@@ -29,17 +29,25 @@
       </h1>
 
       <div class="user">
-        <div class="avatar">
-          <img
-            v-if="user.avatar"
-            class="img"
-            :src="user.avatar"
-          >
-        </div>
-        <div class="user-name">{{ user.name }}</div>
+        <router-link class="me-link" :to="{ name: 'me' }">
+          <div class="avatar">
+            <img
+              v-if="user.avatar"
+              class="img"
+              :src="user.avatar"
+            >
+          </div>
+          <div class="user-name">{{ user.name }}</div>
+        </router-link>
+
+        <router-link v-if="user.admin" :to="{ name: 'admin' }">
+          <BaseIcon icon="https"/> Admin
+        </router-link>
+
         <BaseButton
+          v-if="$route.name === 'session'"
           icon="add"
-          class="accent"
+          class="accent post-question"
           @click="setShowAddQuestion(true)"
         >
           Post a Question
@@ -144,6 +152,10 @@ export default {
       color rgba($md-black, .5)
       margin 0 12px
 
+      .me-link
+        h-box()
+        box-center()
+
       .avatar
         width 32px
         height @width
@@ -152,9 +164,13 @@ export default {
       .user-name
         font-size 12px
         margin-right 24px
+        color @color
 
       .avatar,
       .user-name
         @media (max-width: $small-screen)
           display none
+
+      .post-question
+        margin-left 12px
 </style>

@@ -1,4 +1,6 @@
-export function filterQuestion (question, filter) {
+export function filterQuestion (question, sessionId, filter) {
+  if (question.sessionId !== sessionId) return false
+
   if (!filter || Object.keys(filter).length === 0) {
     return true
   } else {

@@ -1,0 +1,10 @@
+fragment Answer on Answer {
+  id
+  content
+  user {
+    id
+    avatar
+    name
+  }
+  date
+}

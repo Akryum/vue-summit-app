@@ -1,0 +1,12 @@
+fragment Session on Session {
+  id
+  title
+  description
+  public
+  user {
+    id
+    avatar
+    name
+  }
+  date
+}

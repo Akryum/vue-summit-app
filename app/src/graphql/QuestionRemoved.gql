@@ -1,5 +1,5 @@
-subscription questionRemoved ($filter: QuestionsFilter!) {
-  questionRemoved (filter: $filter) {
+subscription questionRemoved ($sessionId: ID!, $filter: QuestionsFilter!) {
+  questionRemoved (sessionId: $sessionId, filter: $filter) {
     id
   }
 }

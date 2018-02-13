@@ -27,6 +27,7 @@
     "graphql": "^0.13.0",
     "lodash.throttle": "^4.1.1",
     "lru-cache": "^4.1.1",
+    "marked": "^0.3.12",
     "moment": "2.20.1",
     "node-fetch": "^2.0.0",
     "serve-favicon": "^2.4.5",

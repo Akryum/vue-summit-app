@@ -260,7 +260,39 @@ input[type=number] {
   .img
     max-width 100%
     max-height 100%
+    min-width 100%
     border-radius 50%
+
+.info-block
+  padding 12px
+  border-radius 3px
+  margin 12px 0
+  h-box()
+  align-items center
+  color $md-blue
+  background rgba(@color, .1)
+
+  &.warning
+    color $md-orange
+    background rgba(@color, .1)
+
+  &.danger
+    color $md-red
+    background rgba(@color, .1)
+
+  > *
+    flex auto 1 1
+
+  .icon
+    flex auto 0 0
+    margin-right 12px
+
+.tag
+  font-size 10px
+  padding 1px 3px 2px
+  border-radius 2px
+  margin 0 8px
+  background $md-grey-200
 
 // Mobile
 

@@ -1,5 +1,6 @@
 import { db } from '../utils/db'
 import { ObjectId } from 'mongodb'
+import shortid from 'shortid'
 
 export function questions () {
   return db.collection('questions')
@@ -8,6 +9,7 @@ export function questions () {
 function generateSelector (filter, context) {
   const selector = {}
   const fields = {
+    sessionId: 1,
     title: 1,
     content: 1,
     votes: 1,
@@ -15,6 +17,7 @@ function generateSelector (filter, context) {
     answered: 1,
     date: 1,
     userId: 1,
+    answers: 1,
   }
   if (filter) {
     if (typeof filter.text !== 'undefined') {
@@ -42,10 +45,13 @@ function processItem (item, context) {
 }
 
 export async function getMany ({
+  sessionId,
   sort,
   filter,
 }, context) {
   const { selector, fields } = generateSelector(filter, context)
+
+  selector.sessionId = sessionId
 
   let sortOption
   if (sort === 'text') {
@@ -72,13 +78,15 @@ export async function getMany ({
   return items
 }
 
-export async function addOne ({ input }, context) {
+export async function addOne ({ sessionId, input }, context) {
   const data = {
+    sessionId: sessionId,
     title: input.title.substr(0, 60),
     content: input.content.substr(0, 500),
     votes: 0,
     votesList: [],
     answered: false,
+    answers: [],
     userId: context.user.userId,
     date: new Date(),
   }
@@ -86,6 +94,53 @@ export async function addOne ({ input }, context) {
   data._id = insertedId
   processItem(data, context)
   return data
+}
+
+export async function addAnswer ({ questionId, input }, context) {
+  const oid = ObjectId(questionId)
+  const question = await questions().findOne({
+    _id: oid,
+  })
+  if (question) {
+    const answer = {
+      id: shortid.generate(),
+      ...input,
+      userId: context.user.userId,
+      date: new Date(),
+    }
+
+    await questions().updateOne({
+      _id: oid,
+    }, {
+      $push: { answers: answer },
+    })
+
+    return answer
+  } else {
+    throw new Error(404)
+  }
+}
+
+export async function removeAnswer ({ questionId, id }, context) {
+  const oid = ObjectId(questionId)
+  const question = await questions().findOne({
+    _id: oid,
+  })
+  if (question) {
+    const answer = question.find(
+      q => q.id === id
+    )
+
+    await questions().updateOne({
+      _id: oid,
+    }, {
+      $pull: { answers: { id } },
+    })
+
+    return answer
+  } else {
+    throw new Error(404)
+  }
 }
 
 export async function toggleVote ({ id }, context) {
@@ -125,6 +180,9 @@ export async function toggleAnswered ({ id }, context) {
     _id: oid,
   })
   if (question) {
+    // Access rights
+    if (!context.user.admin && context.user.userId !== question.userId) return question
+
     const newValue = !question.answered
     question.answered = newValue
     await questions().updateOne({

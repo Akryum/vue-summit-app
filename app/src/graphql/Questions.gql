@@ -1,7 +1,7 @@
 #import "./QuestionFragment.gql"
 
-query questions ($sort: String, $filter: QuestionsFilter) {
-  questions (sort: $sort, filter: $filter) {
+query questions ($sessionId: ID!, $sort: String, $filter: QuestionsFilter) {
+  questions (sessionId: $sessionId, sort: $sort, filter: $filter) {
     ...Question
   }
 }

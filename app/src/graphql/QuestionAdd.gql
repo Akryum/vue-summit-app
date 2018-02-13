@@ -1,7 +1,7 @@
 #import "./QuestionFragment.gql"
 
-mutation questionAdd ($input: QuestionInput!) {
-  questionAdd (input: $input) {
+mutation questionAdd ($sessionId: ID!, $input: QuestionInput!) {
+  questionAdd (sessionId: $sessionId, input: $input) {
     ...Question
   }
 }

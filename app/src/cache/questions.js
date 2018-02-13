@@ -1,8 +1,8 @@
 import { filterQuestion } from '../utils/filters'
 import QUESTIONS_QUERY from '../graphql/Questions.gql'
 
-export function cacheQuestionAddToList (list, { filter, sort }, item) {
-  if (filterQuestion(item, filter)) {
+export function cacheQuestionAddToList (list, { sessionId, filter, sort }, item) {
+  if (filterQuestion(item, sessionId, filter)) {
     const index = list.findIndex(
       i => i.id === item.id
     )
@@ -16,17 +16,17 @@ export function cacheQuestionAddToList (list, { filter, sort }, item) {
   }
 }
 
-export function cacheQuestionRemoveFromList (list, args, item) {
+export function cacheQuestionRemoveFromList (list, item) {
   const index = list.findIndex(
     i => i.id === item.id
   )
-  console.log(index)
   if (index !== -1) {
     list.splice(index, 1)
   }
 }
 
 export function cacheQuestionAdd (store, {
+  sessionId,
   filter,
   sort,
 }, item) {
@@ -34,6 +34,7 @@ export function cacheQuestionAdd (store, {
     const query = {
       query: QUESTIONS_QUERY,
       variables: {
+        sessionId,
         filter,
         sort,
       },
@@ -44,6 +45,7 @@ export function cacheQuestionAdd (store, {
 
     // Transformation
     cacheQuestionAddToList(data.questions, {
+      sessionId,
       filter,
       sort,
     }, item)
@@ -54,6 +56,7 @@ export function cacheQuestionAdd (store, {
 }
 
 export function cacheQuestionRemove (store, {
+  sessionId,
   filter,
   sort,
 }, item) {
@@ -61,6 +64,7 @@ export function cacheQuestionRemove (store, {
     const query = {
       query: QUESTIONS_QUERY,
       variables: {
+        sessionId,
         filter,
         sort,
       },
@@ -70,7 +74,7 @@ export function cacheQuestionRemove (store, {
     const data = store.readQuery(query)
 
     // Transformation
-    cacheQuestionRemoveFromList(data.questions, {}, item)
+    cacheQuestionRemoveFromList(data.questions, item)
 
     // Write the result to the cache
     store.writeQuery({ ...query, data })

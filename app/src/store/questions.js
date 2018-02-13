@@ -3,6 +3,9 @@ export default {
 
   state () {
     return {
+      session: {
+        id: null,
+      },
       filter: 'new',
       sort: '',
       searchText: '',
@@ -10,6 +13,8 @@ export default {
   },
 
   getters: {
+    sessionId: state => state.session.id,
+    session: state => state.session,
     filter: state => state.filter,
     requestFilter: state => {
       let filter = {}
@@ -44,6 +49,9 @@ export default {
   },
 
   mutations: {
+    sessionId (state, value) {
+      state.session.id = value
+    },
     filter (state, value) {
       state.filter = value
     },
@@ -56,6 +64,9 @@ export default {
   },
 
   actions: {
+    setSessionId ({ commit }, value) {
+      commit('sessionId', value)
+    },
     setFilter ({ commit }, value) {
       commit('filter', value)
     },

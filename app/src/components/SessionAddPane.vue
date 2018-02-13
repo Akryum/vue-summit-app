@@ -1,8 +1,8 @@
 <template>
   <BasePane
-    class="question-add-pane right-pane"
-    icon="question_answer"
-    title="Post a Question"
+    class="session-add-pane right-pane"
+    icon="event"
+    title="Add a session"
     @close="close"
   >
 
@@ -17,13 +17,20 @@
       </div>
 
       <textarea
-        v-model="content"
-        class="content-input"
-        placeholder="Content"
+        v-model="description"
+        class="description-input"
+        placeholder="Description (markdown)"
         required
-        maxlength="500"
+        maxlength="1000"
         rows="8"
       />
+
+      <div class="info-block warning">
+        <BaseIcon icon="warning"/>
+        <div>
+          When your create a Session, it will be private. After being validated by our team, it will be automatically published.
+        </div>
+      </div>
     </div>
 
     <div slot="footer" class="pane-footer">
@@ -31,7 +38,7 @@
         :disabled="!formValid"
         @click="submit"
       >
-        Post the new Question
+        Add the new Session
       </BaseButton>
     </div>
   </BasePane>
@@ -39,71 +46,58 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import QUESTION_ADD_MUTATION from '../graphql/QuestionAdd.gql'
-import { cacheQuestionAdd } from '../cache/questions.js'
+import SESSION_ADD_MUTATION from '../graphql/SessionAdd.gql'
+import { cacheSessionAdd } from '../cache/sessions.js'
 
 export default {
   data () {
     return {
       title: '',
-      content: '',
+      description: '',
     }
   },
 
   computed: {
-    ...mapGetters('questions', [
-      'sessionId',
-      'requestFilter',
-      'requestSort',
-    ]),
-
     ...mapGetters('user', [
       'user',
     ]),
 
     formValid () {
-      return this.title && this.content
+      return this.title
     },
   },
 
   methods: {
     ...mapActions('ui', [
-      'setShowAddQuestion',
+      'setShowAddSession',
     ]),
 
     close () {
-      this.setShowAddQuestion(false)
+      this.setShowAddSession(false)
     },
 
     submit () {
       if (this.formValid) {
         this.$apollo.mutate({
-          mutation: QUESTION_ADD_MUTATION,
+          mutation: SESSION_ADD_MUTATION,
           variables: {
-            sessionId: this.sessionId,
             input: {
               title: this.title,
-              content: this.content,
+              description: this.description,
             },
           },
           // Update the cache
-          update: (store, { data: { questionAdd } }) => {
-            cacheQuestionAdd(store, {
-              sessionId: this.sessionId,
-              filter: this.requestFilter,
-              sort: this.requestSort,
-            }, questionAdd)
+          update: (store, { data: { sessionAdd } }) => {
+            cacheSessionAdd(store, sessionAdd)
           },
           optimisticResponse: {
             __typename: 'Mutation',
-            questionAdd: {
-              __typename: 'Question',
+            sessionAdd: {
+              __typename: 'Session',
               id: '',
               title: this.title,
-              content: this.content,
-              votes: 0,
-              hasVoted: false,
-              answered: false,
+              description: this.description,
+              public: false,
               date: Date.now(),
               user: this.user,
             },

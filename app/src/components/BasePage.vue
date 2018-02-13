@@ -1,8 +1,37 @@
 <template>
   <main class="page">
-    <slot/>
+    <div v-if="logged && !user" class="info-block">
+      Please sign in to view this content
+    </div>
+    <div v-else-if="admin && (!user || !user.admin)" class="info-block warning">
+      You don't have access to this content
+    </div>
+    <slot v-else/>
   </main>
 </template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  props: {
+    logged: {
+      type: Boolean,
+      default: false,
+    },
+    admin: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  computed: {
+    ...mapGetters('user', [
+      'user',
+    ]),
+  },
+}
+</script>
 
 <style lang="stylus" scoped>
 @import "../styles/imports"

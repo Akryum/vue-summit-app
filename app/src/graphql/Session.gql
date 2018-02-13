@@ -1,0 +1,7 @@
+#import "./SessionFragment.gql"
+
+query session ($id: ID!) {
+  session (id: $id) {
+    ...Session
+  }
+}

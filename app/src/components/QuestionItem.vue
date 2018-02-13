@@ -29,7 +29,7 @@
 
     <!-- Actions -->
     <div v-if="user" class="actions">
-      <template v-if="user.admin">
+      <template v-if="question.user.id === user.id || user.admin">
         <BaseButton
           icon="done"
           class="icon-button secondary"
@@ -38,17 +38,19 @@
           }"
           @click="toggleAnswered"
         />
+      </template>
 
+      <div v-else-if="question.answered" class="answered">
+        <BaseIcon icon="done"/> <span class="lb">Answered</span>
+      </div>
+
+      <template v-if="user.admin">
         <BaseButton
           icon="delete"
           class="icon-button secondary"
           @click="removeQuestion"
         />
       </template>
-
-      <div v-if="question.answered && !user.admin" class="answered">
-        <BaseIcon icon="done"/> <span class="lb">Answered</span>
-      </div>
 
       <BaseButton
         icon="thumb_up"
