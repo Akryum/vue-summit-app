@@ -12,7 +12,7 @@ module.exports = merge(common, {
   },
   // Skip webpack processing on node_modules
   externals: nodeExternals({
-    // Force css files imported from no_modules
+    // Force css files imported from node_modules
     // to be processed by webpack
     whitelist: /\.css$/,
   }),

@@ -43,7 +43,10 @@ export default {
       type: Boolean,
       default: false,
     },
-    value: {},
+    // eslint-disable-next-line vue/require-prop-types
+    value: {
+      default: null,
+    },
   },
 
   computed: {

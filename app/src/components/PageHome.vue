@@ -7,7 +7,7 @@
 
     <transition name="fade">
       <BaseLoading
-        v-if="loading"
+        v-if="$apollo.loading"
         key="loading"
         class="raised delay"
       />
@@ -54,7 +54,6 @@ export default {
   data () {
     return {
       questions: [],
-      loading: 0,
     }
   },
 
@@ -71,7 +70,6 @@ export default {
         filter: { answered: false },
         sort: '',
       },
-      loadingKey: 'loading',
       fetchPolicy: 'network-only',
       subscribeToMore: [
         // Updated

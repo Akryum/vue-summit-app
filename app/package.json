@@ -17,12 +17,14 @@
     "apollo-cache-inmemory": "^1.0.0",
     "apollo-client": "^2.0.1",
     "apollo-link": "^1.0.0",
+    "apollo-link-context": "^1.0.5",
     "apollo-link-http": "^1.0.0",
+    "apollo-link-persisted-queries": "^0.1.0",
     "apollo-link-ws": "^1.0.0",
     "apollo-utilities": "^1.0.1",
     "compression": "^1.7.1",
     "express": "^4.16.2",
-    "graphql": "^0.12.3",
+    "graphql": "^0.13.0",
     "lodash.throttle": "^4.1.1",
     "lru-cache": "^4.1.1",
     "moment": "2.20.1",
@@ -40,7 +42,6 @@
     "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
-    "apollo-link-persisted-queries": "^0.1.0",
     "autoprefixer": "^7.1.5",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",

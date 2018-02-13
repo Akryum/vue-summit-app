@@ -16,7 +16,10 @@ export default {
   },
 
   props: {
-    value: {},
+    // eslint-disable-next-line vue/require-prop-types
+    value: {
+      default: null,
+    },
     unSelectable: {
       type: Boolean,
       default: false,

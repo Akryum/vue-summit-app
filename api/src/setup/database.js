@@ -7,6 +7,14 @@ export default async function () {
     userId: 1,
   })
 
+  await db.collection('sessions').createIndex({
+    id: 1,
+  })
+
+  await db.collection('questions').createIndex({
+    sessionId: 1,
+  })
+
   await db.collection('questions').createIndex({
     title: 'text',
     content: 'text',

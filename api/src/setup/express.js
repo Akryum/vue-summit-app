@@ -9,7 +9,10 @@ import passport from 'passport'
 import compression from 'compression'
 
 // Apollo
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
+import { graphqlExpress } from 'apollo-server-express'
+
+// Graphcool Playground
+import expressPlayground from 'graphql-playground-middleware-express'
 
 // Apollo Subs
 import { execute, subscribe } from 'graphql'
@@ -24,17 +27,17 @@ import schema from '../graphql/schema'
 // Config
 import {
   PORT,
-  SUBSCRIPTIONS_PATH,
+  SUBSCRIPTION_ENDPOINT,
   CLIENT_ORIGIN,
   SECRET,
   COOKIE_DOMAIN,
   PUBLIC_URL,
   ENGINE_KEY,
   GRAPHQL_ENDPOINT,
-  GRAPHIQL_ENDPOINT,
+  PLAYGROUND_ENDPOINT,
 } from '../config'
 
-const subscriptionsEndpoint = `ws${PUBLIC_URL.replace('http', '')}${SUBSCRIPTIONS_PATH}`
+const subscriptionsEndpoint = `ws${PUBLIC_URL.replace('http', '')}${SUBSCRIPTION_ENDPOINT}`
 
 function setupEngine (app) {
   const engine = new Engine({
@@ -120,9 +123,9 @@ function setupGraphQL (app) {
     })
   }))
 
-  app.use(GRAPHIQL_ENDPOINT, graphiqlExpress({
-    endpointURL: GRAPHQL_ENDPOINT,
-    subscriptionsEndpoint,
+  app.use(PLAYGROUND_ENDPOINT, expressPlayground({
+    endpoint: GRAPHQL_ENDPOINT,
+    subscriptionEndpoint: SUBSCRIPTION_ENDPOINT,
   }))
 }
 
@@ -165,7 +168,7 @@ function setupGraphQLSubs (server) {
     },
     {
       server,
-      path: SUBSCRIPTIONS_PATH,
+      path: SUBSCRIPTION_ENDPOINT,
     }
   )
 }
@@ -185,7 +188,7 @@ export default async function () {
   server.listen(PORT, () => {
     setupGraphQLSubs(server)
 
-    console.log(`API Server is now running on http://${PUBLIC_URL}/graphql`)
+    console.log(`API Server is now running on http://${PUBLIC_URL}/${GRAPHQL_ENDPOINT}`)
     console.log(`API Subscriptions server is now running on ${subscriptionsEndpoint}`)
   })
 }

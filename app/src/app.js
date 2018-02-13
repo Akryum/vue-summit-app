@@ -31,7 +31,7 @@ export async function createApp (context) {
   const app = new Vue({
     router,
     store,
-    apolloProvider,
+    provide: apolloProvider.provide(),
     ...App,
   })
 
