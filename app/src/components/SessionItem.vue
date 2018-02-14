@@ -32,7 +32,7 @@
     </div>
 
     <!-- Actions -->
-    <div v-if="user" class="actions">
+    <div v-if="user && !hideActions" class="actions">
       <template v-if="user.admin">
         <BaseButton
           :icon="session.public ? 'lock_open' : 'lock'"
@@ -68,6 +68,11 @@ export default {
     session: {
       type: Object,
       required: true,
+    },
+
+    hideActions: {
+      type: Boolean,
+      default: false,
     },
   },
 

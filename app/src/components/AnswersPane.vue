@@ -19,7 +19,7 @@
       fetch-policy="cache-and-network"
     >
       <template slot-scope="{ result: { data, loading, error } }">
-        <BaseLoading v-if="loading"/>
+        <BaseLineLoading v-if="loading"/>
 
         <div v-else-if="error" class="info-block danger">
           <BaseIcon icon="error"/>
@@ -31,6 +31,7 @@
             v-for="answer of data.question.answers"
             :key="answer.id"
             :answer="answer"
+            :question="question"
             class="item"
           />
         </template>
@@ -40,13 +41,14 @@
     </ApolloQuery>
 
     <div
-      v-if="user.admin || user.userId === session.userId"
+      v-if="user"
       slot="footer"
       class="pane-footer"
     >
       <div v-if="writeAnswer" class="answer-form">
         <div class="form custom">
           <textarea
+            ref="contentInput"
             v-model="content"
             class="content-input"
             placeholder="Write an answer (markdown)"
@@ -139,6 +141,9 @@ export default {
     openAnswerForm () {
       this.content = ''
       this.writeAnswer = true
+      this.$nextTick(() => {
+        this.$refs.contentInput.focus()
+      })
     },
 
     sendAnswer () {
@@ -156,16 +161,16 @@ export default {
               questionId: this.question.id,
             }, answerAdd)
           },
-          // optimisticResponse: {
-          //   __typename: 'Mutation',
-          //   answerAdd: {
-          //     __typename: 'Answer',
-          //     id: '',
-          //     content: this.content,
-          //     user: this.user,
-          //     date: Date.now(),
-          //   },
-          // },
+          optimisticResponse: {
+            __typename: 'Mutation',
+            answerAdd: {
+              __typename: 'Answer',
+              id: '',
+              content: this.content,
+              user: this.user,
+              date: Date.now(),
+            },
+          },
         })
 
         this.writeAnswer = false
@@ -180,9 +185,6 @@ export default {
 
 .item
   margin 0 32px 12px
-
-.base-loading
-  height 0
 
 .pane-footer,
 .actions

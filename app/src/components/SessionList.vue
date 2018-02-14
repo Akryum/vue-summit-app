@@ -5,7 +5,7 @@
     fetch-policy="cache-and-network"
   >
     <template slot-scope="{ result: { data, loading, error } }">
-      <BaseLoading v-if="loading"/>
+      <BaseLineLoading v-if="loading"/>
 
       <div v-else-if="error" class="info-block danger">
         <BaseIcon icon="error"/>
@@ -54,6 +54,4 @@ export default {
 .item
   margin-bottom 12px
 
-.base-loading
-  height 0
 </style>

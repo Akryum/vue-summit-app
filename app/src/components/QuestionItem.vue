@@ -29,20 +29,12 @@
 
     <!-- Actions -->
     <div v-if="user && !hideActions" class="actions">
-      <template v-if="question.user.id === user.id || user.admin">
-        <BaseButton
-          icon="done"
-          class="icon-button secondary"
-          :class="{
-            selected: question.answered,
-          }"
-          title="Mark as answered"
-          @click.prevent="toggleAnswered"
-        />
-      </template>
-
-      <div v-else-if="question.answered" class="answered">
-        <BaseIcon icon="done"/> <span class="lb">Answered</span>
+      <div
+        v-if="question.answered"
+        class="answered"
+        title="This question has been answered"
+      >
+        <BaseIcon icon="done"/>
       </div>
 
       <template v-if="user.admin">
@@ -94,7 +86,7 @@ import { cacheQuestionRemove } from '../cache/questions'
 import marked from 'marked'
 
 import QUESTION_TOGGLE_VOTED from '../graphql/QuestionToggleVoted.gql'
-import QUESTION_TOGGLE_ANSWERED from '../graphql/QuestionToggleAnswered.gql'
+// import QUESTION_TOGGLE_ANSWERED from '../graphql/QuestionToggleAnswered.gql'
 import QUESTION_REMOVE from '../graphql/QuestionRemove.gql'
 
 export default {
@@ -144,22 +136,22 @@ export default {
       'setShowAnswerPane',
     ]),
 
-    toggleAnswered () {
-      this.$apollo.mutate({
-        mutation: QUESTION_TOGGLE_ANSWERED,
-        variables: {
-          id: this.question.id,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          questionToggleAnswered: {
-            __typename: 'Question',
-            id: this.question.id,
-            answered: !this.question.answered,
-          },
-        },
-      })
-    },
+    // toggleAnswered () {
+    //   this.$apollo.mutate({
+    //     mutation: QUESTION_TOGGLE_ANSWERED,
+    //     variables: {
+    //       id: this.question.id,
+    //     },
+    //     optimisticResponse: {
+    //       __typename: 'Mutation',
+    //       questionToggleAnswered: {
+    //         __typename: 'Question',
+    //         id: this.question.id,
+    //         answered: !this.question.answered,
+    //       },
+    //     },
+    //   })
+    // },
 
     toggleVoted () {
       const newVotes = this.question.hasVoted
@@ -288,10 +280,9 @@ export default {
 
   .answered
     color $color-primary
-
-    @media (max-width: $small-screen)
-      .lb
-        display none
+    font-size 24px
+    h-box()
+    box-center()
 
   &:hover
     background $color-secondary

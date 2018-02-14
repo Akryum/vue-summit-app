@@ -10,7 +10,7 @@
       >
     </div>
 
-    <!-- Question content -->
+    <!-- Answer content -->
     <div class="content">
       <div class="text" v-html="contentHtml"/>
 
@@ -22,18 +22,42 @@
         </span>
       </div>
     </div>
+
+    <!-- Actions -->
+    <div v-if="user && !hideActions" class="actions">
+      <template v-if="user.admin">
+        <BaseButton
+          icon="delete"
+          class="icon-button secondary"
+          @click.prevent="removeAnswer"
+        />
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import marked from 'marked'
+import { cacheAnswerRemove } from '../cache/answers'
+
+import ANSWER_REMOVE_MUTATION from '../graphql/AnswerRemove.gql'
 
 export default {
   props: {
     answer: {
       type: Object,
       required: true,
+    },
+
+    question: {
+      type: Object,
+      required: true,
+    },
+
+    hideActions: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -48,6 +72,32 @@ export default {
 
     contentHtml () {
       return marked(this.answer.content)
+    },
+  },
+
+  methods: {
+    removeAnswer () {
+      if (!confirm('Delete this answer?')) return
+
+      this.$apollo.mutate({
+        mutation: ANSWER_REMOVE_MUTATION,
+        variables: {
+          questionId: this.question.id,
+          id: this.answer.id,
+        },
+        update: (store, { data: { answerRemove } }) => {
+          cacheAnswerRemove(store, {
+            questionId: this.question.id,
+          }, answerRemove)
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          answerRemove: {
+            __typename: 'Answer',
+            ...this.answer,
+          },
+        },
+      })
     },
   },
 }

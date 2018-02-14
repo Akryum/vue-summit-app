@@ -159,7 +159,7 @@ export async function addAnswer ({ questionId, input }, context) {
     await questions().updateOne({
       _id: oid,
     }, {
-      $push: { answers: answer },
+      $push: { answers: { $each: [answer], $position: 0 } },
     })
 
     return { answer, question }
@@ -174,7 +174,7 @@ export async function removeAnswer ({ questionId, id }, context) {
     _id: oid,
   })
   if (question) {
-    const answer = question.find(
+    const answer = question.answers.find(
       q => q.id === id
     )
 
@@ -196,7 +196,7 @@ export async function updateAnswerDetails ({ questionId, id, input }, context) {
     _id: oid,
   })
   if (question) {
-    const answer = question.find(
+    const answer = question.answers.find(
       q => q.id === id
     )
 

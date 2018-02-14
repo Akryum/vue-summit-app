@@ -6,7 +6,7 @@ export function cacheAnswerAddToList (list, item) {
     i => i.id === item.id
   )
   if (index === -1) {
-    list.push(item)
+    list.splice(0, 0, item)
   }
 }
 
@@ -25,7 +25,7 @@ export function cacheAnswerAdd (store, {
   const query = {
     query: ANSWERS_QUERY,
     variables: {
-      id: questionId,
+      questionId,
     },
   }
 
@@ -45,7 +45,7 @@ export function cacheAnswerRemove (store, {
   const query = {
     query: ANSWERS_QUERY,
     variables: {
-      id: questionId,
+      questionId,
     },
   }
 

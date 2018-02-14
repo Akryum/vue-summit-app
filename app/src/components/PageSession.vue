@@ -46,13 +46,10 @@
       @refresh="refresh"
     />
 
-    <transition name="fade">
-      <BaseLoading
-        v-if="$apollo.loading"
-        key="loading"
-        class="raised delay"
-      />
-    </transition>
+    <BaseLineLoading
+      v-if="$apollo.loading"
+      key="loading"
+    />
 
     <div
       key="items"
@@ -253,12 +250,6 @@ export default {
 
 <style lang="stylus" scoped>
 @import "../styles/imports"
-
-.base-loading
-  position fixed
-  top 10px
-  left 0
-  right 0
 
 .toolbar
   margin-bottom 24px
