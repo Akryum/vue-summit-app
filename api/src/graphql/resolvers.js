@@ -173,6 +173,7 @@ export default {
     answerAdd: secure(async (root, args, context) => {
       const { answer, question } = await Questions.addAnswer(args, context)
       pubsub.publish(PubSubChannels.ANSWER_ADDED_TOPIC, { answerAdded: answer, questionId: args.questionId, context })
+      console.log(question)
       pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return answer
     }),

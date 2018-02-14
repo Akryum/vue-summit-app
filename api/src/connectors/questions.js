@@ -156,11 +156,15 @@ export async function addAnswer ({ questionId, input }, context) {
       date: new Date(),
     }
 
+    question.answers.splice(0, 0, answer)
+
     await questions().updateOne({
       _id: oid,
     }, {
       $push: { answers: { $each: [answer], $position: 0 } },
     })
+
+    processItem(question, context)
 
     return { answer, question }
   } else {
@@ -174,20 +178,27 @@ export async function removeAnswer ({ questionId, id }, context) {
     _id: oid,
   })
   if (question) {
-    const answer = question.answers.find(
+    const answerIndex = question.answers.findIndex(
       q => q.id === id
     )
 
-    await questions().updateOne({
-      _id: oid,
-    }, {
-      $pull: { answers: { id } },
-    })
+    if (answerIndex !== -1) {
+      const answer = question.answers[answerIndex]
+      question.answers.splice(answerIndex, 1)
 
-    return { answer, question }
-  } else {
-    throw new Error(404)
+      await questions().updateOne({
+        _id: oid,
+      }, {
+        $pull: { answers: { id } },
+      })
+
+      processItem(question, context)
+
+      return { answer, question }
+    }
   }
+
+  throw new Error(404)
 }
 
 export async function updateAnswerDetails ({ questionId, id, input }, context) {
@@ -212,6 +223,8 @@ export async function updateAnswerDetails ({ questionId, id, input }, context) {
       }, {
         $set: { 'answers.$.content': input.content },
       })
+
+      processItem(question, context)
 
       return { answer, question }
     }

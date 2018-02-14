@@ -181,6 +181,9 @@ export default {
               filter: this.requestFilter,
             }
           },
+          result (data) {
+            console.log(data)
+          },
         },
         // Added
         {
