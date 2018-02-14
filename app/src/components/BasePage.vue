@@ -52,6 +52,8 @@ export default {
 body
   margin 0
   font-family 'Roboto', sans-serif
+  background darken($color-secondary, 10%)
+  color $md-white
 
 a
   text-decoration none

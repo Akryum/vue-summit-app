@@ -125,6 +125,7 @@ export default {
 
 .question-toolbar
   padding 42px 32px 12px
+  background darken($color-secondary, 10%)
 
   .state
     h-box()

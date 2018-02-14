@@ -162,6 +162,7 @@ export default {
 
     &:hover
       background lighten($color-accent, 10%)
+      border-color @background
 
   &,
   &.selected

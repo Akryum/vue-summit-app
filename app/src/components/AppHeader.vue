@@ -1,5 +1,5 @@
 <template>
-  <header class="app-header">
+  <header class="app-header" v-sticky="user && { zIndex: 1000, marginTop: 0 }">
     <div v-if="!user" class="content guest">
       <h1 class="app-name">
         <router-link class="link" :to="{ name: 'home' }">
@@ -99,7 +99,7 @@ export default {
 
   .content
     background $color-secondary
-    box-shadow 0 0 10px rgba(black, 0.05)
+    box-shadow 0 0 10px rgba(black, 0.2)
 
   .app-name
     flex 1

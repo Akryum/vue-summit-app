@@ -1,22 +1,22 @@
 <template>
   <BasePage class="page-session">
-    <div v-if="session" class="session-info">
+    <div class="session-info">
       <div class="info-header">
-        <h1 class="title">{{ session.title }}</h1>
+        <h1 class="title">{{ session && session.title }}</h1>
         <div class="avatar">
           <img
-            v-if="session.user.avatar"
+            v-if="session && session.user.avatar"
             class="img"
             :src="session.user.avatar"
           >
         </div>
 
-        <div class="name">{{ session.user.name }}</div>
+        <div class="name">{{ session && session.user.name }}</div>
       </div>
 
       <div class="more-info">
         <div
-          v-if="session.description"
+          v-if="session && session.description"
           class="session-description"
           v-html="descriptionHtml"
         />
@@ -24,19 +24,25 @@
         <div class="session-data">
           <span class="info date">
             <BaseIcon icon="schedule"/>
-            <BaseTimeAgo :date="session.date"/>
+            <BaseTimeAgo v-if="session" :date="session.date"/>
           </span>
 
           <span class="info question-count">
             <BaseIcon icon="forum"/>
-            <span>{{ session.questionCount }} question{{ session.questionCount > 1 ? 's' : '' }}</span>
+            <span v-if="session">{{ session.questionCount }} question{{ session.questionCount > 1 ? 's' : '' }}</span>
           </span>
         </div>
       </div>
     </div>
 
+    <div v-if="session && !session.public" class="info-block warning">
+      <BaseIcon icon="warning"/>
+      <div>This Session is currently private. After being validated by our team, it will be automatically published.</div>
+    </div>
+
     <QuestionToolbar
       class="toolbar"
+      v-sticky="user && { zIndex: 10, marginTop: 72 }"
       @refresh="refresh"
     />
 
@@ -107,6 +113,10 @@ export default {
       'requestFilter',
       'requestSort',
       'searchText',
+    ]),
+
+    ...mapGetters('user', [
+      'user',
     ]),
 
     emptyMessage () {

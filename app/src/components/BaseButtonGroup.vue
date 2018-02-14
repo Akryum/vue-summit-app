@@ -80,6 +80,14 @@ export default {
       color: $md-white;
       border-color @background
 
+    &:hover:not(.selected)
+      background rgba($color-primary, .3)
+      border-color $color-primary
+      border-right solid 1px
+
+      & + .base-button
+        border-left none
+
   &:after
     content: '';
     display: inline-block;

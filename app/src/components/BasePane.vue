@@ -57,6 +57,7 @@ export default {
     position fixed
     top 0
     bottom 0
+    z-index 2000
 
   .background
     left 0

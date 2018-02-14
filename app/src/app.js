@@ -4,6 +4,7 @@ import App from './components/App.vue'
 import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
+import VueSticky from './utils/sticky'
 import * as filters from './filters'
 import './components'
 import VueApollo from 'vue-apollo'
@@ -13,6 +14,8 @@ import { createApolloClient } from './apollo'
 for (const key in filters) {
   Vue.filter(key, filters[key])
 }
+
+Vue.directive('sticky', VueSticky)
 
 export async function createApp (context) {
   const router = createRouter()

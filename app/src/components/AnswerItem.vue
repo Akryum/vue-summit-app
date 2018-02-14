@@ -1,47 +1,42 @@
 <template>
-  <div class="question-item" :class="cssClass">
+  <div class="answer-item" :class="cssClass">
 
     <!-- Author Avatar -->
     <div class="avatar">
       <img
-        v-if="question.user.avatar"
+        v-if="answer.user.avatar"
         class="img"
-        :src="question.user.avatar"
+        :src="answer.user.avatar"
       >
     </div>
 
     <!-- Question content -->
     <div class="content">
-      <div class="header">
-        <span class="title">{{ question.title }}</span>
-      </div>
-
       <div class="text" v-html="contentHtml"/>
 
       <div class="info">
-        <span class="author">{{ question.user.name }}</span>
+        <span class="author">{{ answer.user.name }}</span>
         <span class="date">
           <BaseIcon icon="schedule"/>
-          <BaseTimeAgo :date="question.date"/>
+          <BaseTimeAgo :date="answer.date"/>
         </span>
       </div>
     </div>
 
     <!-- Actions -->
     <div v-if="user" class="actions">
-      <template v-if="question.user.id === user.id || user.admin">
+      <template v-if="answer.user.id === user.id || user.admin">
         <BaseButton
           icon="done"
           class="icon-button secondary"
           :class="{
-            selected: question.answered,
+            selected: answer.answered,
           }"
-          title="Mark as answered"
           @click.prevent="toggleAnswered"
         />
       </template>
 
-      <div v-else-if="question.answered" class="answered">
+      <div v-else-if="answer.answered" class="answered">
         <BaseIcon icon="done"/> <span class="lb">Answered</span>
       </div>
 
@@ -56,32 +51,30 @@
       <BaseButton
         icon="comment"
         class="secondary"
-        title="Show and add comments"
-        @click.prevent="setShowAnswer(question.id)"
+        @click.prevent="setShowAnswer(answer.id)"
       >
-        {{ question.answerCount }}
+        {{ answer.answerCount }}
       </BaseButton>
 
       <BaseButton
         icon="thumb_up"
         class="secondary"
         :class="{
-          selected: question.hasVoted,
+          selected: answer.hasVoted,
         }"
-        title="Upvote"
         @click.prevent="toggleVoted"
       >
-        {{ question.votes }}
+        {{ answer.votes }}
       </BaseButton>
     </div>
 
     <div v-else class="guest-info">
-      <div v-if="question.answered" class="answered">
+      <div v-if="answer.answered" class="answered">
         <BaseIcon icon="done"/> <span class="lb">Answered</span>
       </div>
 
       <div class="votes">
-        <BaseIcon icon="thumb_up"/> {{ question.votes }}
+        <BaseIcon icon="thumb_up"/> {{ answer.votes }}
       </div>
     </div>
   </div>
@@ -89,7 +82,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { cacheQuestionRemove } from '../cache/questions'
+import { cacheQuestionRemove } from '../cache/answers'
 import marked from 'marked'
 
 import QUESTION_TOGGLE_VOTED from '../graphql/QuestionToggleVoted.gql'
@@ -98,7 +91,7 @@ import QUESTION_REMOVE from '../graphql/QuestionRemove.gql'
 
 export default {
   props: {
-    question: {
+    answer: {
       type: Object,
       required: true,
     },
@@ -109,22 +102,20 @@ export default {
       'user',
     ]),
 
-    ...mapGetters('questions', [
-      'sessionId',
+    ...mapGetters('answers', [
       'requestFilter',
       'requestSort',
     ]),
 
     cssClass () {
       return {
-        answered: this.question.answered,
-        'has-voted': this.question.hasVoted,
-        'has-votes': this.question.votes > 0,
+        answered: this.answer.answered,
+        'has-voted': this.answer.hasVoted,
       }
     },
 
     contentHtml () {
-      return marked(this.question.content)
+      return marked(this.answer.content)
     },
   },
 
@@ -133,35 +124,35 @@ export default {
       this.$apollo.mutate({
         mutation: QUESTION_TOGGLE_ANSWERED,
         variables: {
-          id: this.question.id,
+          id: this.answer.id,
         },
         optimisticResponse: {
           __typename: 'Mutation',
-          questionToggleAnswered: {
+          answerToggleAnswered: {
             __typename: 'Question',
-            id: this.question.id,
-            answered: !this.question.answered,
+            id: this.answer.id,
+            answered: !this.answer.answered,
           },
         },
       })
     },
 
     toggleVoted () {
-      const newVotes = this.question.hasVoted
-        ? this.question.votes - 1
-        : this.question.votes + 1
-      const newHasVoted = !this.question.hasVoted
+      const newVotes = this.answer.hasVoted
+        ? this.answer.votes - 1
+        : this.answer.votes + 1
+      const newHasVoted = !this.answer.hasVoted
 
       this.$apollo.mutate({
         mutation: QUESTION_TOGGLE_VOTED,
         variables: {
-          id: this.question.id,
+          id: this.answer.id,
         },
         optimisticResponse: {
           __typename: 'Mutation',
-          questionToggleVoted: {
+          answerToggleVoted: {
             __typename: 'Question',
-            id: this.question.id,
+            id: this.answer.id,
             votes: newVotes,
             hasVoted: newHasVoted,
           },
@@ -170,26 +161,23 @@ export default {
     },
 
     removeQuestion () {
-      if (!confirm('Confirm delete?')) return
-
       this.$apollo.mutate({
         mutation: QUESTION_REMOVE,
         variables: {
-          id: this.question.id,
+          id: this.answer.id,
         },
         // Update the cache
-        update: (store, { data: { questionRemove } }) => {
+        update: (store, { data: { answerRemove } }) => {
           cacheQuestionRemove(store, {
-            sessionId: this.sessionId,
             filter: this.requestFilter,
             sort: this.requestSort,
-          }, questionRemove)
+          }, answerRemove)
         },
         optimisticResponse: {
           __typename: 'Mutation',
-          questionRemove: {
+          answerRemove: {
             __typename: 'Question',
-            id: this.question.id,
+            id: this.answer.id,
           },
         },
       })
@@ -205,7 +193,7 @@ export default {
 <style lang="stylus" scoped>
 @import "../styles/imports"
 
-.question-item
+.answer-item
   padding 24px 32px
   h-box()
   align-items stretch
@@ -275,11 +263,6 @@ export default {
 
   &:hover
     background $color-secondary
-
-  &:not(.has-votes)
-    .guest-info
-      .votes
-        opacity .3
 
   &.answered
     background rgba($color-primary, .2)

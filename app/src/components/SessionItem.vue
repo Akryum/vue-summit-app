@@ -150,8 +150,8 @@ export default {
 
   .tag
     &.private
-      background $md-purple
-      color $md-white
+      background $color-accent
+      color $md-black
 
   .actions
     h-box()
