@@ -1,0 +1,10 @@
+#import "./AnswerFragment.gql"
+
+query questionAnswers ($questionId: ID!) {
+  question (id: $questionId) {
+    id
+    answers {
+      ...Answer
+    }
+  }
+}

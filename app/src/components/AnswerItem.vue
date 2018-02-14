@@ -22,72 +22,12 @@
         </span>
       </div>
     </div>
-
-    <!-- Actions -->
-    <div v-if="user" class="actions">
-      <template v-if="answer.user.id === user.id || user.admin">
-        <BaseButton
-          icon="done"
-          class="icon-button secondary"
-          :class="{
-            selected: answer.answered,
-          }"
-          @click.prevent="toggleAnswered"
-        />
-      </template>
-
-      <div v-else-if="answer.answered" class="answered">
-        <BaseIcon icon="done"/> <span class="lb">Answered</span>
-      </div>
-
-      <template v-if="user.admin">
-        <BaseButton
-          icon="delete"
-          class="icon-button secondary"
-          @click.prevent="removeQuestion"
-        />
-      </template>
-
-      <BaseButton
-        icon="comment"
-        class="secondary"
-        @click.prevent="setShowAnswer(answer.id)"
-      >
-        {{ answer.answerCount }}
-      </BaseButton>
-
-      <BaseButton
-        icon="thumb_up"
-        class="secondary"
-        :class="{
-          selected: answer.hasVoted,
-        }"
-        @click.prevent="toggleVoted"
-      >
-        {{ answer.votes }}
-      </BaseButton>
-    </div>
-
-    <div v-else class="guest-info">
-      <div v-if="answer.answered" class="answered">
-        <BaseIcon icon="done"/> <span class="lb">Answered</span>
-      </div>
-
-      <div class="votes">
-        <BaseIcon icon="thumb_up"/> {{ answer.votes }}
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { cacheQuestionRemove } from '../cache/answers'
 import marked from 'marked'
-
-import QUESTION_TOGGLE_VOTED from '../graphql/QuestionToggleVoted.gql'
-import QUESTION_TOGGLE_ANSWERED from '../graphql/QuestionToggleAnswered.gql'
-import QUESTION_REMOVE from '../graphql/QuestionRemove.gql'
 
 export default {
   props: {
@@ -102,89 +42,12 @@ export default {
       'user',
     ]),
 
-    ...mapGetters('answers', [
-      'requestFilter',
-      'requestSort',
-    ]),
-
     cssClass () {
-      return {
-        answered: this.answer.answered,
-        'has-voted': this.answer.hasVoted,
-      }
+      return {}
     },
 
     contentHtml () {
       return marked(this.answer.content)
-    },
-  },
-
-  methods: {
-    toggleAnswered () {
-      this.$apollo.mutate({
-        mutation: QUESTION_TOGGLE_ANSWERED,
-        variables: {
-          id: this.answer.id,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          answerToggleAnswered: {
-            __typename: 'Question',
-            id: this.answer.id,
-            answered: !this.answer.answered,
-          },
-        },
-      })
-    },
-
-    toggleVoted () {
-      const newVotes = this.answer.hasVoted
-        ? this.answer.votes - 1
-        : this.answer.votes + 1
-      const newHasVoted = !this.answer.hasVoted
-
-      this.$apollo.mutate({
-        mutation: QUESTION_TOGGLE_VOTED,
-        variables: {
-          id: this.answer.id,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          answerToggleVoted: {
-            __typename: 'Question',
-            id: this.answer.id,
-            votes: newVotes,
-            hasVoted: newHasVoted,
-          },
-        },
-      })
-    },
-
-    removeQuestion () {
-      this.$apollo.mutate({
-        mutation: QUESTION_REMOVE,
-        variables: {
-          id: this.answer.id,
-        },
-        // Update the cache
-        update: (store, { data: { answerRemove } }) => {
-          cacheQuestionRemove(store, {
-            filter: this.requestFilter,
-            sort: this.requestSort,
-          }, answerRemove)
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          answerRemove: {
-            __typename: 'Question',
-            id: this.answer.id,
-          },
-        },
-      })
-    },
-
-    setShowAnswer () {
-
     },
   },
 }
@@ -211,15 +74,10 @@ export default {
     @media (max-width: $small-screen)
       margin-right 12px
 
-    .title
-      font-size 1.4em
-      font-weight lighter
-
     .text
       white-space pre-pre-wrap
       margin-bottom 6px
 
-    .title,
     .text
       word-wrap break-word
 
@@ -263,7 +121,4 @@ export default {
 
   &:hover
     background $color-secondary
-
-  &.answered
-    background rgba($color-primary, .2)
 </style>

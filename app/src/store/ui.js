@@ -3,33 +3,43 @@ export default {
 
   state () {
     return {
-      showAddQuestion: false,
-      showAddSession: false,
+      showQuestionPane: false,
+      showSessionPane: false,
+      showAnswerPane: false,
     }
   },
 
   getters: {
-    showAddQuestion: state => state.showAddQuestion,
-    showAddSession: state => state.showAddSession,
+    showQuestionPane: state => state.showQuestionPane,
+    showSessionPane: state => state.showSessionPane,
+    showAnswerPane: state => state.showAnswerPane,
   },
 
   mutations: {
-    showAddQuestion (state, value) {
-      state.showAddQuestion = value
+    showQuestionPane (state, value) {
+      state.showQuestionPane = value
     },
 
-    showAddSession (state, value) {
-      state.showAddSession = value
+    showSessionPane (state, value) {
+      state.showSessionPane = value
+    },
+
+    showAnswerPane (state, value) {
+      state.showAnswerPane = value
     },
   },
 
   actions: {
     setShowAddQuestion ({ commit }, value) {
-      commit('showAddQuestion', value)
+      commit('showQuestionPane', value)
     },
 
     setShowAddSession ({ commit }, value) {
-      commit('showAddSession', value)
+      commit('showSessionPane', value)
+    },
+
+    setShowAnswerPane ({ commit }, value) {
+      commit('showAnswerPane', value)
     },
   },
 }

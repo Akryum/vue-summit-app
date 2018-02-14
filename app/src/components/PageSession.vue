@@ -69,6 +69,7 @@
         v-for="question of questions"
         :key="question.id"
         :question="question"
+        :session="session"
       />
     </div>
   </BasePage>

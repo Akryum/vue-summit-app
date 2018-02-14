@@ -5,8 +5,9 @@
     <AppFooter/>
 
     <transition name="right-pane" duration="800">
-      <QuestionAddPane v-if="showAddQuestion"/>
-      <SessionAddPane v-else-if="showAddSession"/>
+      <QuestionAddPane v-if="showQuestionPane"/>
+      <SessionAddPane v-else-if="showSessionPane"/>
+      <AnswersPane v-else-if="showAnswerPane" v-bind="showAnswerPane"/>
     </transition>
   </div>
 </template>
@@ -17,6 +18,7 @@ import AppHeader from './AppHeader.vue'
 import AppFooter from './AppFooter.vue'
 import QuestionAddPane from './QuestionAddPane.vue'
 import SessionAddPane from './SessionAddPane.vue'
+import AnswersPane from './AnswersPane.vue'
 
 export default {
   components: {
@@ -24,12 +26,14 @@ export default {
     AppFooter,
     QuestionAddPane,
     SessionAddPane,
+    AnswersPane,
   },
 
   computed: {
     ...mapGetters('ui', [
-      'showAddQuestion',
-      'showAddSession',
+      'showQuestionPane',
+      'showSessionPane',
+      'showAnswerPane',
     ]),
   },
 }

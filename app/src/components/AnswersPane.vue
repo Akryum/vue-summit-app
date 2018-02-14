@@ -1,34 +1,119 @@
 <template>
   <BasePane
-    class="answers-pane right-pane"
+    class="answers-pane right-pane large"
     icon="comment"
     title="Answers"
     @close="close"
   >
+    <QuestionItem
+      :question="question"
+      hide-actions
+      class="item emphasize"
+    />
 
-    Helloworld
+    <ApolloQuery
+      :query="require('../graphql/QuestionAnswers.gql')"
+      :variables="{
+        questionId: question.id,
+      }"
+      fetch-policy="cache-and-network"
+    >
+      <template slot-scope="{ result: { data, loading, error } }">
+        <BaseLoading v-if="loading"/>
 
-    <div slot="footer" class="pane-footer">
-      <BaseButton
-        :disabled="!formValid"
-        @click="submit"
-      >
-        Add the new Session
-      </BaseButton>
+        <div v-else-if="error" class="info-block danger">
+          <BaseIcon icon="error"/>
+          <div>An error occured while fetching the answers.</div>
+        </div>
+
+        <template v-if="data && data.question && data.question.answers.length">
+          <AnswerItem
+            v-for="answer of data.question.answers"
+            :key="answer.id"
+            :answer="answer"
+            class="item"
+          />
+        </template>
+
+        <div v-else-if="!loading" class="empty">No answers yet</div>
+      </template>
+    </ApolloQuery>
+
+    <div
+      v-if="user.admin || user.userId === session.userId"
+      slot="footer"
+      class="pane-footer"
+    >
+      <div v-if="writeAnswer" class="answer-form">
+        <div class="form custom">
+          <textarea
+            v-model="content"
+            class="content-input"
+            placeholder="Write an answer (markdown)"
+            required
+            maxlength="500"
+            rows="4"
+          />
+        </div>
+
+        <div class="actions">
+          <BaseButton
+            icon="close"
+            class="secondary"
+            @click="writeAnswer = false"
+          >
+            Cancel
+          </BaseButton>
+          <BaseButton
+            icon="send"
+            :disabled="!formValid"
+            @click="sendAnswer"
+          >
+            Send answer
+          </BaseButton>
+        </div>
+      </div>
+      <template v-else>
+        <BaseButton
+          @click="openAnswerForm"
+        >
+          Write an answer
+        </BaseButton>
+      </template>
     </div>
   </BasePane>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import SESSION_ADD_MUTATION from '../graphql/SessionAdd.gql'
-import { cacheSessionAdd } from '../cache/sessions.js'
+import { cacheAnswerAdd } from '../cache/answers.js'
+
+import AnswerItem from './AnswerItem.vue'
+import QuestionItem from './QuestionItem.vue'
+
+import ANSWER_ADD_MUTATION from '../graphql/AnswerAdd.gql'
 
 export default {
+  components: {
+    AnswerItem,
+    QuestionItem,
+  },
+
+  props: {
+    question: {
+      type: Object,
+      required: true,
+    },
+    session: {
+      type: Object,
+      required: true,
+    },
+  },
+
   data () {
     return {
-      title: '',
-      description: '',
+      content: '',
+      writeAnswer: false,
     }
   },
 
@@ -38,48 +123,52 @@ export default {
     ]),
 
     formValid () {
-      return this.title
+      return this.content
     },
   },
 
   methods: {
     ...mapActions('ui', [
-      'setShowAddSession',
+      'setShowAnswerPane',
     ]),
 
     close () {
-      this.setShowAddSession(false)
+      this.setShowAnswerPane(false)
     },
 
-    submit () {
+    openAnswerForm () {
+      this.content = ''
+      this.writeAnswer = true
+    },
+
+    sendAnswer () {
       if (this.formValid) {
         this.$apollo.mutate({
-          mutation: SESSION_ADD_MUTATION,
+          mutation: ANSWER_ADD_MUTATION,
           variables: {
+            questionId: this.question.id,
             input: {
-              title: this.title,
-              description: this.description,
+              content: this.content,
             },
           },
-          // Update the cache
-          update: (store, { data: { sessionAdd } }) => {
-            cacheSessionAdd(store, sessionAdd)
+          update: (store, { data: { answerAdd } }) => {
+            cacheAnswerAdd(store, {
+              questionId: this.question.id,
+            }, answerAdd)
           },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            sessionAdd: {
-              __typename: 'Session',
-              id: '',
-              title: this.title,
-              description: this.description,
-              public: false,
-              date: Date.now(),
-              user: this.user,
-            },
-          },
+          // optimisticResponse: {
+          //   __typename: 'Mutation',
+          //   answerAdd: {
+          //     __typename: 'Answer',
+          //     id: '',
+          //     content: this.content,
+          //     user: this.user,
+          //     date: Date.now(),
+          //   },
+          // },
         })
 
-        this.close()
+        this.writeAnswer = false
       }
     },
   },
@@ -89,11 +178,23 @@ export default {
 <style lang="stylus" scoped>
 @import "../styles/imports"
 
-.pane-footer
+.item
+  margin 0 32px 12px
+
+.base-loading
+  height 0
+
+.pane-footer,
+.actions
   h-box()
   box-center()
 
-  .comment-input
-    flex auto 1 1
+.answer-form
+  v-box()
+  align-items stretch
+  width 100%
+
+  .form.custom
+    padding 0 0 12px 0
 
 </style>

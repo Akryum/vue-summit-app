@@ -1,0 +1,7 @@
+#import "./SessionFragment.gql"
+
+mutation sessionUpdate ($id: ID!, $input: SessionInput!) {
+  sessionUpdate (id: $id, input: $input) {
+    ...Session
+  }
+}

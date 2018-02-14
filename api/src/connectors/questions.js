@@ -78,6 +78,15 @@ export async function getMany ({
   return items
 }
 
+export async function getById (id, context) {
+  const oid = ObjectId(id)
+  const question = await questions().findOne({
+    _id: oid,
+  })
+  if (question) processItem(question, context)
+  return question
+}
+
 export async function count (selector, context) {
   return questions().count(selector)
 }
@@ -114,6 +123,26 @@ export async function addOne ({ sessionId, input }, context) {
   return data
 }
 
+export async function updateDetails ({ id, input }, context) {
+  const oid = ObjectId(id)
+  const question = await questions().findOne({
+    _id: oid,
+  })
+  if (question && (
+    question.userId === context.user.userId ||
+    context.user.admin
+  )) {
+    Object.assign(question, input)
+    await questions().updateOne({
+      _id: oid,
+    }, {
+      $set: input,
+    })
+    processItem(question, context)
+  }
+  return question
+}
+
 export async function addAnswer ({ questionId, input }, context) {
   const oid = ObjectId(questionId)
   const question = await questions().findOne({
@@ -133,7 +162,7 @@ export async function addAnswer ({ questionId, input }, context) {
       $push: { answers: answer },
     })
 
-    return answer
+    return { answer, question }
   } else {
     throw new Error(404)
   }
@@ -155,10 +184,39 @@ export async function removeAnswer ({ questionId, id }, context) {
       $pull: { answers: { id } },
     })
 
-    return answer
+    return { answer, question }
   } else {
     throw new Error(404)
   }
+}
+
+export async function updateAnswerDetails ({ questionId, id, input }, context) {
+  const oid = ObjectId(questionId)
+  const question = await questions().findOne({
+    _id: oid,
+  })
+  if (question) {
+    const answer = question.find(
+      q => q.id === id
+    )
+
+    if (answer && (
+      answer.userId === context.user.userId ||
+      context.user.admin
+    )) {
+      Object.assign(answer, input)
+
+      await questions().updateOne({
+        _id: oid,
+        'answers.id': id,
+      }, {
+        $set: { 'answers.$.content': input.content },
+      })
+
+      return { answer, question }
+    }
+  }
+  throw new Error(404)
 }
 
 export async function toggleVote ({ id }, context) {

@@ -1,0 +1,7 @@
+#import "./AnswerFragment.gql"
+
+subscription answerUpdated ($questionId: ID!) {
+  answerUpdated (questionId: $questionId) {
+    ...Answer
+  }
+}

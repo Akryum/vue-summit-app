@@ -1,0 +1,7 @@
+#import "./AnswerFragment.gql"
+
+mutation answerRemove ($questionId: ID!, $id: ID!) {
+  answerRemove (questionId: $questionId, id: $id) {
+    ...Answer
+  }
+}

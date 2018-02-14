@@ -78,6 +78,26 @@ export async function addOne ({ input }, context) {
   return data
 }
 
+export async function updateDetails ({ id, input }, context) {
+  const oid = ObjectId(id)
+  const session = await sessions().findOne({
+    _id: oid,
+  })
+  if (session && (
+    session.userId === context.user.userId ||
+    context.user.admin
+  )) {
+    Object.assign(session, input)
+    await sessions().updateOne({
+      _id: oid,
+    }, {
+      $set: input,
+    })
+    processItem(session, context)
+  }
+  return session
+}
+
 export async function togglePublic ({ id }, context) {
   const oid = ObjectId(id)
   const session = await sessions().findOne({

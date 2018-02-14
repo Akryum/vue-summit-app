@@ -75,6 +75,10 @@ export default {
       min-width 0
       width 100vw
 
+  &.large
+    .pane
+      width 40vw
+
   .header
     padding 32px
     h-box()

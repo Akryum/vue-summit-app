@@ -19,7 +19,7 @@
       <textarea
         v-model="content"
         class="content-input"
-        placeholder="Content"
+        placeholder="Content (markdown)"
         required
         maxlength="500"
         rows="8"

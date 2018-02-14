@@ -28,7 +28,7 @@
     </div>
 
     <!-- Actions -->
-    <div v-if="user" class="actions">
+    <div v-if="user && !hideActions" class="actions">
       <template v-if="question.user.id === user.id || user.admin">
         <BaseButton
           icon="done"
@@ -57,6 +57,7 @@
         icon="comment"
         class="secondary"
         title="Show and add comments"
+        :disabled="!session"
         @click.prevent="setShowAnswer(question.id)"
       >
         {{ question.answerCount }}
@@ -88,7 +89,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { cacheQuestionRemove } from '../cache/questions'
 import marked from 'marked'
 
@@ -101,6 +102,16 @@ export default {
     question: {
       type: Object,
       required: true,
+    },
+
+    session: {
+      type: Object,
+      default: null,
+    },
+
+    hideActions: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -129,6 +140,10 @@ export default {
   },
 
   methods: {
+    ...mapActions('ui', [
+      'setShowAnswerPane',
+    ]),
+
     toggleAnswered () {
       this.$apollo.mutate({
         mutation: QUESTION_TOGGLE_ANSWERED,
@@ -196,7 +211,12 @@ export default {
     },
 
     setShowAnswer () {
-
+      if (this.session) {
+        this.setShowAnswerPane({
+          question: this.question,
+          session: this.session,
+        })
+      }
     },
   },
 }
@@ -281,6 +301,10 @@ export default {
       .votes
         opacity .3
 
+  &.emphasize
+    background lighten($color-secondary, 20%)
+
   &.answered
     background rgba($color-primary, .2)
+
 </style>

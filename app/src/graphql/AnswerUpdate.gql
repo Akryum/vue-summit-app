@@ -1,0 +1,7 @@
+#import "./AnswerFragment.gql"
+
+mutation answerUpdate ($questionId: ID!, $id: ID!, $input: AnswerInput!) {
+  answerUpdate (questionId: $questionId, id: $id, input: $input) {
+    ...Answer
+  }
+}

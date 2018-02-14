@@ -3,14 +3,11 @@ import * as Questions from '../connectors/questions'
 import * as Sessions from '../connectors/sessions'
 import { PubSub, withFilter } from 'graphql-subscriptions'
 import { filterQuestion, secure } from '../utils/filters'
+import * as PubSubChannels from './channels'
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 
 const pubsub = new PubSub()
-
-const QUESTION_ADDED_TOPIC = 'question_added'
-const QUESTION_UPDATED_TOPIC = 'question_updated'
-const QUESTION_REMOVED_TOPIC = 'question_removed'
 
 export default {
   Date: new GraphQLScalarType({
@@ -29,11 +26,13 @@ export default {
       return null
     },
   }),
+
   User: {
     email: secure((user, args, context) => {
       return user.email
     }, true),
   },
+
   Session: {
     user: (session, args, context) => {
       return Users.getById(session.userId)
@@ -50,6 +49,7 @@ export default {
       })
     },
   },
+
   Question: {
     user: (question, args, context) => {
       return Users.getById(question.userId)
@@ -61,11 +61,13 @@ export default {
       return Questions.countAnswers(question.id)
     },
   },
+
   Answer: {
     user: (answer, args, context) => {
       return Users.getById(answer.userId)
     },
   },
+
   Query: {
     currentUser: (root, args, context) => {
       return context.user
@@ -87,6 +89,9 @@ export default {
       } else {
         return []
       }
+    },
+    question: (root, { id }, context) => {
+      return Questions.getById(id, context)
     },
     sessionsPublic: (root, args, context) => {
       return Sessions.getMany({ filter: { public: true } }, context)
@@ -110,64 +115,138 @@ export default {
       }
     },
   },
+
   Mutation: {
-    sessionAdd: secure((root, args, context) => {
-      return Sessions.addOne(args, context)
+    sessionAdd: secure(async (root, args, context) => {
+      const session = await Sessions.addOne(args, context)
+      // No pubsub for now
+      return session
     }),
-    sessionTogglePublic: secure((root, args, context) => {
-      return Sessions.togglePublic(args, context)
+    sessionUpdate: secure(async (root, args, context) => {
+      const session = await Sessions.updateDetails(args, context)
+      pubsub.publish(PubSubChannels.SESSION_UPDATED_TOPIC, { sessionUpdated: session, context })
+      pubsub.publish(PubSubChannels.SESSION_DETAILS_UPDATED_TOPIC, { sessionDetailsUpdated: session, context })
+      return session
+    }),
+    sessionTogglePublic: secure(async (root, args, context) => {
+      const session = await Sessions.togglePublic(args, context)
+      pubsub.publish(PubSubChannels.SESSION_DETAILS_UPDATED_TOPIC, { sessionDetailsUpdated: session, context })
+      if (session.public) {
+        pubsub.publish(PubSubChannels.SESSION_ADDED_TOPIC, { sessionAdded: session, context })
+      } else {
+        pubsub.publish(PubSubChannels.SESSION_REMOVED_TOPIC, { sessionRemoved: session, context })
+      }
+      return session
     }, true),
-    sessionRemove: secure((root, args, context) => {
-      return Sessions.removeOne(args, context)
+    sessionRemove: secure(async (root, args, context) => {
+      const session = await Sessions.removeOne(args, context)
+      pubsub.publish(PubSubChannels.SESSION_REMOVED_TOPIC, { sessionRemoved: session, context })
+      return session
     }, true),
+
     questionAdd: secure(async (root, args, context) => {
       const question = await Questions.addOne(args, context)
-      pubsub.publish(QUESTION_ADDED_TOPIC, { questionAdded: question, context })
+      pubsub.publish(PubSubChannels.QUESTION_ADDED_TOPIC, { questionAdded: question, context })
+      return question
+    }),
+    questionUpdate: secure(async (root, args, context) => {
+      const question = await Questions.updateDetails(args, context)
+      pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return question
     }),
     questionToggleVoted: secure(async (root, args, context) => {
       const question = await Questions.toggleVote(args, context)
-      pubsub.publish(QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
+      pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return question
     }),
     questionToggleAnswered: secure(async (root, args, context) => {
       const question = await Questions.toggleAnswered(args, context)
-      pubsub.publish(QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
+      pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return question
     }),
     questionRemove: secure(async (root, args, context) => {
       const question = await Questions.removeOne(args, context)
-      pubsub.publish(QUESTION_REMOVED_TOPIC, { questionRemoved: question, context })
+      pubsub.publish(PubSubChannels.QUESTION_REMOVED_TOPIC, { questionRemoved: question, context })
       return question
     }, true),
+
     answerAdd: secure(async (root, args, context) => {
-      const answer = await Questions.addAnswer(args, context)
-      // TODO sub
+      const { answer, question } = await Questions.addAnswer(args, context)
+      pubsub.publish(PubSubChannels.ANSWER_ADDED_TOPIC, { answerAdded: answer, questionId: args.questionId, context })
+      pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
+      return answer
+    }),
+    answerUpdate: secure(async (root, args, context) => {
+      const { answer } = await Questions.updateAnswerDetails(args, context)
+      pubsub.publish(PubSubChannels.ANSWER_UPDATED_TOPIC, { answerUpdated: answer, questionId: args.questionId, context })
       return answer
     }),
     answerRemove: secure(async (root, args, context) => {
-      const answer = await Questions.removeAnswer(args, context)
-      // TODO sub
+      const { answer, question } = await Questions.removeAnswer(args, context)
+      pubsub.publish(PubSubChannels.ANSWER_REMOVED_TOPIC, { answerRemoved: answer, questionId: args.questionId, context })
+      pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return answer
     }, true),
   },
+
   Subscription: {
+    sessionAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubChannels.SESSION_ADDED_TOPIC),
+        (payload, variables) => payload.sessionAdded.public,
+      ),
+    },
+    sessionUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubChannels.SESSION_UPDATED_TOPIC),
+        (payload, variables) => payload.sessionUpdated.public,
+      ),
+    },
+    sessionDetailsUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubChannels.SESSION_DETAILS_UPDATED_TOPIC),
+        (payload, variables) => payload.sessionDetailsUpdated.id === variables.id,
+      ),
+    },
+    sessionRemoved: {
+      subscribe: () => pubsub.asyncIterator(PubSubChannels.SESSION_REMOVED_TOPIC),
+    },
+
     questionAdded: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(QUESTION_ADDED_TOPIC),
+        () => pubsub.asyncIterator(PubSubChannels.QUESTION_ADDED_TOPIC),
         (payload, variables) => filterQuestion(payload.questionAdded, variables.sessionId, variables.filter),
       ),
     },
     questionUpdated: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(QUESTION_UPDATED_TOPIC),
+        () => pubsub.asyncIterator(PubSubChannels.QUESTION_UPDATED_TOPIC),
         (payload, variables) => filterQuestion(payload.questionUpdated, variables.sessionId, variables.filter),
       ),
     },
     questionRemoved: {
       subscribe: withFilter(
-        () => pubsub.asyncIterator(QUESTION_REMOVED_TOPIC),
+        () => pubsub.asyncIterator(PubSubChannels.QUESTION_REMOVED_TOPIC),
         (payload, variables) => filterQuestion(payload.questionRemoved, variables.sessionId, variables.filter),
+      ),
+    },
+
+    answerAdded: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubChannels.ANSWER_ADDED_TOPIC),
+        (payload, variables) => payload.questionId === variables.questionId,
+      ),
+    },
+    answerUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubChannels.ANSWER_UPDATED_TOPIC),
+        (payload, variables) => payload.questionId === variables.questionId,
+      ),
+    },
+    answerRemoved: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubChannels.ANSWER_REMOVED_TOPIC),
+        (payload, variables) => payload.questionId === variables.questionId,
       ),
     },
   },
