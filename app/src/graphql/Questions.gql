@@ -3,5 +3,6 @@
 query questions ($sessionId: ID!, $sort: String, $filter: QuestionsFilter) {
   questions (sessionId: $sessionId, sort: $sort, filter: $filter) {
     ...Question
+    hasVoted
   }
 }

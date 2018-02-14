@@ -3,7 +3,6 @@ fragment Question on Question {
   title
   content
   votes
-  hasVoted
   answered
   answerCount
   date
