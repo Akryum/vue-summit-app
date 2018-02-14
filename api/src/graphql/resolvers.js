@@ -29,6 +29,11 @@ export default {
       return null
     },
   }),
+  User: {
+    email: secure((user, args, context) => {
+      return user.email
+    }, true),
+  },
   Session: {
     user: (session, args, context) => {
       return Users.getById(session.userId)
@@ -65,6 +70,9 @@ export default {
     currentUser: (root, args, context) => {
       return context.user
     },
+    user: secure((root, { id }, context) => {
+      return Users.getById(id)
+    }, true),
     questions: async (root, args, context) => {
       const session = await Sessions.getById(args.sessionId)
 

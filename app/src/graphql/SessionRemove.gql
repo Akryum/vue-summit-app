@@ -1,0 +1,7 @@
+#import "./SessionFragment.gql"
+
+mutation sessionRemove ($id: ID!) {
+  sessionRemove (id: $id) {
+    ...Session
+  }
+}

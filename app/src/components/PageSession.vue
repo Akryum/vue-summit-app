@@ -42,7 +42,7 @@
 
     <QuestionToolbar
       class="toolbar"
-      v-sticky="user && { zIndex: 10, marginTop: 72 }"
+      v-sticky="user && { zIndex: 10, marginTop: 42 }"
       @refresh="refresh"
     />
 

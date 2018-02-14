@@ -9,7 +9,7 @@ export function cacheSessionAddToList (list, item) {
   }
 }
 
-export function cacheSessionRemoveFromList (list, args, item) {
+export function cacheSessionRemoveFromList (list, item) {
   const index = list.findIndex(
     i => i.id === item.id
   )
@@ -33,17 +33,15 @@ export function cacheSessionAdd (store, item) {
   store.writeQuery({ ...query, data })
 }
 
-export function caheSessionRemove (store, item) {
-  const query = {
-    query: SESSIONS_USER_QUERY,
-  }
+export function caheSessionRemove (store, queries, item) {
+  queries.forEach(query => {
+    // Read the cache
+    const data = store.readQuery(query)
 
-  // Read the cache
-  const data = store.readQuery(query)
+    // Transformation
+    cacheSessionRemoveFromList(data[query.dataProp], item)
 
-  // Transformation
-  cacheSessionRemoveFromList(data.sessionsUser, item)
-
-  // Write the result to the cache
-  store.writeQuery({ ...query, data })
+    // Write the result to the cache
+    store.writeQuery({ ...query, data })
+  })
 }

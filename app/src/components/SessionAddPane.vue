@@ -100,6 +100,7 @@ export default {
               public: false,
               date: Date.now(),
               user: this.user,
+              questionCount: 0,
             },
           },
         })

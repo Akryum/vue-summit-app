@@ -5,6 +5,7 @@ type User @cacheControl(maxAge: 300) {
   id: ID!
   name: String!
   avatar: String!
+  email: String
   admin: Boolean
 }
 
@@ -66,11 +67,13 @@ input AnswerInput {
 type Query {
   # Currently logged user data
   currentUser: User @cacheControl(maxAge: 0)
+  # (Admin) Any user
+  user (id: ID!): User
   # All the questions that matches the filter if any
   questions (sessionId: ID!, sort: String, filter: QuestionsFilter): [Question]
   # All the public sessions
   sessionsPublic: [Session]
-  # All the sessions
+  # (Admin) All the sessions
   sessionsAll: [Session]
   # User sessions
   sessionsUser: [Session]
@@ -80,7 +83,9 @@ type Query {
 
 type Mutation {
   sessionAdd (input: SessionInput!): Session
+  # (Admin)
   sessionTogglePublic (id: ID!): Session
+  # (Admin)
   sessionRemove (id: ID!): Session
   questionAdd (sessionId: ID!, input: QuestionInput!): Question
   questionToggleVoted (id: ID!): Question

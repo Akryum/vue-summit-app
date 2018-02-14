@@ -23,6 +23,7 @@
 
       <div class="info">
         <span class="author">{{ session.user.name }}</span>
+        <span v-if="session.user.email" class="email">{{ session.user.email }}</span>
         <span class="date">
           <BaseIcon icon="schedule"/>
           <BaseTimeAgo :date="session.date"/>
@@ -42,6 +43,12 @@
           }"
           @click.prevent="togglePublic"
         />
+
+        <BaseButton
+          icon="delete"
+          class="icon-button secondary"
+          @click.prevent="removeSession"
+        />
       </template>
     </div>
   </router-link>
@@ -49,8 +56,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { caheSessionRemove } from '../cache/sessions'
 
 import SESSION_TOGGLE_PUBLIC_MUTATION from '../graphql/SessionTogglePublic.gql'
+import SESSION_REMOVE_MUTATION from '../graphql/SessionRemove.gql'
+import SESSIONS_ALL_QUERY from '../graphql/SessionsAll.gql'
+import SESSIONS_USER_QUERY from '../graphql/SessionsUser.gql'
 
 export default {
   props: {
@@ -86,6 +97,33 @@ export default {
             id: this.session.id,
             public: !this.session.public,
           },
+        },
+      })
+    },
+
+    removeSession () {
+      if (!confirm('Delete this session?')) return
+
+      this.$apollo.mutate({
+        mutation: SESSION_REMOVE_MUTATION,
+        variables: {
+          id: this.session.id,
+        },
+        update: (store, { data: { sessionRemove } }) => {
+          caheSessionRemove(store, [
+            {
+              query: SESSIONS_ALL_QUERY,
+              dataProp: 'sessionsAll',
+            },
+            {
+              query: SESSIONS_USER_QUERY,
+              dataProp: 'sessionsUser',
+            },
+          ], sessionRemove)
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          sessionRemove: this.session,
         },
       })
     },

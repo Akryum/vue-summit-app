@@ -8,8 +8,14 @@ import {
 } from '../config'
 
 function getGoogleAvatar (profile) {
-  if (profile.photos.length !== 0) {
+  if (profile.photos && profile.photos.length) {
     return profile.photos[0].value
+  }
+}
+
+function getEmail (profile) {
+  if (profile.emails && profile.emails.length) {
+    return profile.emails[0].value
   }
 }
 
@@ -28,6 +34,7 @@ export default async function () {
           userId: `google-${profile.id}`,
           name: profile.displayName,
           avatar: getGoogleAvatar(profile),
+          email: getEmail(profile),
           accessToken,
           refreshToken,
         })

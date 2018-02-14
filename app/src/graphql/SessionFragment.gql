@@ -1,7 +1,6 @@
 fragment Session on Session {
   id
   title
-  description
   public
   user {
     id
@@ -9,5 +8,17 @@ fragment Session on Session {
     name
   }
   date
+}
+
+fragment SessionDetails on Session {
+  id
+  description
   questionCount
+}
+
+fragment SessionAsAdmin on Session {
+  id
+  user {
+    email
+  }
 }

@@ -3,5 +3,6 @@
 query session ($id: ID!) {
   session (id: $id) {
     ...Session
+    ...SessionDetails
   }
 }
