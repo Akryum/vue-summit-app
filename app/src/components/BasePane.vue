@@ -67,7 +67,7 @@ export default {
     width 30vw
     max-width 800px
     min-width 500px
-    background $md-white
+    background $color-secondary
     v-box()
 
     @media (max-width: $small-screen)
@@ -75,7 +75,7 @@ export default {
       width 100vw
 
   .header
-    padding 12px
+    padding 32px
     h-box()
     box-center()
 
@@ -101,5 +101,10 @@ export default {
   &.left-pane
     .pane
       left 0
+
+  .header,
+  .footer,
+  >>> .form
+    padding 32px
 
 </style>

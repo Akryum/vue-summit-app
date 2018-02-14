@@ -5,6 +5,7 @@ import PageHome from './components/PageHome.vue'
 import PageSession from './components/PageSession.vue'
 import PageMe from './components/PageMe.vue'
 import PageAdmin from './components/PageAdmin.vue'
+import PageAbout from './components/PageAbout.vue'
 import PageNotFound from './components/PageNotFound.vue'
 
 Vue.use(VueRouter)
@@ -14,6 +15,7 @@ const routes = [
   { path: '/sessions/:sessionId', name: 'session', component: PageSession, props: true },
   { path: '/me', name: 'me', component: PageMe },
   { path: '/admin', name: 'admin', component: PageAdmin },
+  { path: '/about', name: 'about', component: PageAbout },
   { path: '*', component: PageNotFound },
 ]
 

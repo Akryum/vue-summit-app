@@ -16,6 +16,7 @@ type Session {
   user: User
   date: Date
   questions (sort: String, filter: QuestionsFilter): [Question]
+  questionCount: Int
 }
 
 input SessionInput {
@@ -37,6 +38,7 @@ type Question {
   session: Session @cacheControl(maxAge: 300)
   date: Date
   answers: [Answer]
+  answerCount: Int
 }
 
 input QuestionsFilter {

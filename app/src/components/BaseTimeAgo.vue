@@ -1,13 +1,21 @@
 <template>
-  <span>{{ date | fromNow }}</span>
+  <span :title="title">{{ date | fromNow }}</span>
 </template>
 
 <script>
+import { date } from '../filters'
+
 export default {
   props: {
     date: {
       type: [Number, String, Date],
       required: true,
+    },
+  },
+
+  computed: {
+    title () {
+      return date(this.date, 'LLL')
     },
   },
 

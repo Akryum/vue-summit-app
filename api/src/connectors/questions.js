@@ -78,6 +78,24 @@ export async function getMany ({
   return items
 }
 
+export async function count (selector, context) {
+  return questions().count(selector)
+}
+
+export async function countAnswers (id, context) {
+  const result = await questions().aggregate([
+    {
+      $match: { _id: ObjectId(id) },
+    },
+    {
+      $project: {
+        answerCount: { $size: '$answers' },
+      },
+    },
+  ]).toArray()
+  return result && result.length && result[0].answerCount
+}
+
 export async function addOne ({ sessionId, input }, context) {
   const data = {
     sessionId: sessionId,

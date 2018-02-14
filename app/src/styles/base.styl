@@ -2,6 +2,11 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400');
 @import "./imports";
 
+html,
+body
+  background darken($color-secondary, 10%)
+  color $md-white
+
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
@@ -29,7 +34,7 @@ a {
 }
 
 h1 {
-  color: $color-primary;
+  color: $color-accent;
   margin-top: 0;
   font-weight: lighter;
   font-size: 2.2em;
@@ -38,7 +43,7 @@ h1 {
 
 h2,
 h3 {
-  color: darken($color-primary, 5%);
+  color: darken($color-accent, 5%);
   font-weight: normal;
   margin: 16px 0;
 }

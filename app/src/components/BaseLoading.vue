@@ -33,7 +33,7 @@
 
   &.raised
     .wrapper
-      background $md-white
+      background darken($color-secondary, 20%)
       padding 12px
       border-radius 50%
       box-shadow 0 5px 30px rgba(black, .1)

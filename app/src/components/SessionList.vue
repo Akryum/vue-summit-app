@@ -2,6 +2,7 @@
   <ApolloQuery
     class="session-list"
     :query="query"
+    fetch-policy="cache-and-network"
   >
     <template slot-scope="{ result: { data, loading, error } }">
       <BaseLoading v-if="loading"/>
@@ -11,15 +12,16 @@
         <div>An error occured while fetching the sessions.</div>
       </div>
 
-      <template v-else-if="data && data[dataProp].length">
+      <template v-if="data && data[dataProp].length">
         <SessionItem
           v-for="session of data[dataProp]"
           :key="session.id"
           :session="session"
+          class="item"
         />
       </template>
 
-      <div v-else class="empty">No Sessions yet</div>
+      <div v-else-if="!loading" class="empty">No Sessions yet</div>
     </template>
   </ApolloQuery>
 </template>
@@ -45,3 +47,13 @@ export default {
   },
 }
 </script>
+
+<style lang="stylus" scoped>
+@import "../styles/imports"
+
+.item
+  margin-bottom 12px
+
+.base-loading
+  height 0
+</style>

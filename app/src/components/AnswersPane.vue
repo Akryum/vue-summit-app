@@ -1,37 +1,12 @@
 <template>
   <BasePane
-    class="session-add-pane right-pane"
-    icon="event"
-    title="Add a session"
+    class="answers-pane right-pane"
+    icon="comment"
+    title="Answers"
     @close="close"
   >
 
-    <div class="form">
-      <div>
-        <input
-          v-model="title"
-          placeholder="Title"
-          required
-          maxlength="60"
-        >
-      </div>
-
-      <textarea
-        v-model="description"
-        class="description-input"
-        placeholder="Description (markdown)"
-        required
-        maxlength="1000"
-        rows="8"
-      />
-
-      <div class="info-block warning">
-        <BaseIcon icon="warning"/>
-        <div>
-          When your create a Session, it will be private. After being validated by our team, it will be automatically published.
-        </div>
-      </div>
-    </div>
+    Helloworld
 
     <div slot="footer" class="pane-footer">
       <BaseButton
@@ -114,11 +89,11 @@ export default {
 <style lang="stylus" scoped>
 @import "../styles/imports"
 
-.description-input
-  margin 32px 0
-
 .pane-footer
   h-box()
   box-center()
+
+  .comment-input
+    flex auto 1 1
 
 </style>

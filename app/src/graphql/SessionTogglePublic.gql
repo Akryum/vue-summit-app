@@ -1,0 +1,6 @@
+mutation sessionTogglePublic ($id: ID!) {
+  sessionTogglePublic(id: $id) {
+    id
+    public
+  }
+}

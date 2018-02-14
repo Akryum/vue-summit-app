@@ -2,7 +2,6 @@
   <router-link
     class="session-item"
     :class="cssClass"
-    tag="div"
     :to="{ name: 'session', params: { sessionId: session.id } }"
   >
     <!-- Author Avatar -->
@@ -14,7 +13,7 @@
       >
     </div>
 
-    <!-- Question content -->
+    <!-- Session content -->
     <div class="content">
       <div class="header">
         <span class="title">{{ session.title }}</span>
@@ -23,17 +22,36 @@
       </div>
 
       <div class="info">
-        <span class="author">by {{ session.user.name }}</span>
+        <span class="author">{{ session.user.name }}</span>
         <span class="date">
           <BaseIcon icon="schedule"/>
           <BaseTimeAgo :date="session.date"/>
         </span>
       </div>
     </div>
+
+    <!-- Actions -->
+    <div v-if="user" class="actions">
+      <template v-if="user.admin">
+        <BaseButton
+          :icon="session.public ? 'lock_open' : 'lock'"
+          class="icon-button secondary"
+          title="Toggle public"
+          :class="{
+            selected: session.public,
+          }"
+          @click.prevent="togglePublic"
+        />
+      </template>
+    </div>
   </router-link>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
+import SESSION_TOGGLE_PUBLIC_MUTATION from '../graphql/SessionTogglePublic.gql'
+
 export default {
   props: {
     session: {
@@ -43,10 +61,33 @@ export default {
   },
 
   computed: {
+    ...mapGetters('user', [
+      'user',
+    ]),
+
     cssClass () {
       return {
         private: !this.session.public,
       }
+    },
+  },
+
+  methods: {
+    togglePublic () {
+      this.$apollo.mutate({
+        mutation: SESSION_TOGGLE_PUBLIC_MUTATION,
+        variables: {
+          id: this.session.id,
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          sessionTogglePublic: {
+            __typename: 'Session',
+            id: this.session.id,
+            public: !this.session.public,
+          },
+        },
+      })
     },
   },
 }
@@ -56,9 +97,11 @@ export default {
 @import "../styles/imports"
 
 .session-item
+  display block
   padding 24px 32px
   h-box()
   align-items stretch
+  border-radius 3px
 
   @media (max-width: $small-screen)
     padding 12px
@@ -85,7 +128,7 @@ export default {
       word-wrap break-word
 
   .info
-    color rgba($md-black, .5)
+    color rgba($md-white, .5)
     font-size 0.8em
 
     >>> > span
@@ -115,8 +158,9 @@ export default {
     box-center()
 
   &:hover
-    background $md-grey-100
+    background $color-secondary
 
   &.private
-    opacity .6
+    .avatar
+      opacity .5
 </style>

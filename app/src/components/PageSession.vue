@@ -1,13 +1,38 @@
 <template>
   <BasePage class="page-session">
     <div v-if="session" class="session-info">
-      <h1>{{ session.title }}</h1>
+      <div class="info-header">
+        <h1 class="title">{{ session.title }}</h1>
+        <div class="avatar">
+          <img
+            v-if="session.user.avatar"
+            class="img"
+            :src="session.user.avatar"
+          >
+        </div>
 
-      <div
-        v-if="session.description"
-        class="session-description"
-        v-html="descriptionHtml"
-      />
+        <div class="name">{{ session.user.name }}</div>
+      </div>
+
+      <div class="more-info">
+        <div
+          v-if="session.description"
+          class="session-description"
+          v-html="descriptionHtml"
+        />
+
+        <div class="session-data">
+          <span class="info date">
+            <BaseIcon icon="schedule"/>
+            <BaseTimeAgo :date="session.date"/>
+          </span>
+
+          <span class="info question-count">
+            <BaseIcon icon="forum"/>
+            <span>{{ session.questionCount }} question{{ session.questionCount > 1 ? 's' : '' }}</span>
+          </span>
+        </div>
+      </div>
     </div>
 
     <QuestionToolbar
@@ -220,16 +245,83 @@ export default {
 
 .base-loading
   position fixed
-  top 12px
+  top 10px
   left 0
   right 0
 
 .toolbar
   margin-bottom 24px
 
+.items
+  min-height 400px
+
 .question-item
   margin-bottom 12px
 
 .session-info
   margin-bottom 32px
+  box-shadow 0 0 10px rgba(black, 0.1)
+
+  .info-header
+    v-box()
+    box-center()
+    background rgba($color-secondary, 1)
+    color $md-white
+    padding 32px
+    margin-top 12px
+    border-radius 3px 3px 0 0
+
+    >>> > *
+      space-between-y(8px)
+
+    .title
+      margin-top 0
+      margin-bottom 24px
+
+    .avatar
+      width 64px
+      height @width
+
+    .name
+      font-size 20px
+
+  .more-info
+    background darken($color-secondary, 20%)
+    color rgba($md-white, .5)
+    padding 32px 32px 24px
+    border-radius 0 0 3px 3px
+
+  .session-data
+    h-box()
+    box-center()
+
+    .info
+      space-between-x(32px)
+
+      .icon
+        margin-right 4px
+
+  .session-description
+    color $md-white
+    padding 18px 24px
+    border-radius 3px
+    background $color-secondary
+    color $md-white
+    box-shadow 0 0 20px rgba(black, .05)
+    margin-bottom 24px
+    position relative
+    min-height 3em
+
+    &::before
+      display block
+      content ''
+      position absolute
+      top -12px
+      left calc(50% - 12px)
+      width 0
+      height 0
+      border-style solid
+      border-color transparent transparent @background transparent
+      border-width 0 12px 12px 12px
+
 </style>

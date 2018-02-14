@@ -58,7 +58,6 @@ a
   color $color-primary
 
 h1
-  color $color-primary
   margin-top 0
   font-weight lighter
   font-size 2.2em

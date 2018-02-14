@@ -5,6 +5,7 @@ fragment Question on Question {
   votes
   hasVoted
   answered
+  answerCount
   date
   user {
     id

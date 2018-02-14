@@ -16,10 +16,10 @@
         <span class="title">{{ question.title }}</span>
       </div>
 
-      <div class="text">{{ question.content }}</div>
+      <div class="text" v-html="contentHtml"/>
 
       <div class="info">
-        <span class="author">by {{ question.user.name }}</span>
+        <span class="author">{{ question.user.name }}</span>
         <span class="date">
           <BaseIcon icon="schedule"/>
           <BaseTimeAgo :date="question.date"/>
@@ -36,7 +36,7 @@
           :class="{
             selected: question.answered,
           }"
-          @click="toggleAnswered"
+          @click.prevent="toggleAnswered"
         />
       </template>
 
@@ -48,9 +48,17 @@
         <BaseButton
           icon="delete"
           class="icon-button secondary"
-          @click="removeQuestion"
+          @click.prevent="removeQuestion"
         />
       </template>
+
+      <BaseButton
+        icon="comment"
+        class="secondary"
+        @click.prevent="setShowAnswer(question.id)"
+      >
+        {{ question.answerCount }}
+      </BaseButton>
 
       <BaseButton
         icon="thumb_up"
@@ -58,7 +66,7 @@
         :class="{
           selected: question.hasVoted,
         }"
-        @click="toggleVoted"
+        @click.prevent="toggleVoted"
       >
         {{ question.votes }}
       </BaseButton>
@@ -79,6 +87,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { cacheQuestionRemove } from '../cache/questions'
+import marked from 'marked'
 
 import QUESTION_TOGGLE_VOTED from '../graphql/QuestionToggleVoted.gql'
 import QUESTION_TOGGLE_ANSWERED from '../graphql/QuestionToggleAnswered.gql'
@@ -107,6 +116,10 @@ export default {
         answered: this.question.answered,
         'has-voted': this.question.hasVoted,
       }
+    },
+
+    contentHtml () {
+      return marked(this.question.content)
     },
   },
 
@@ -173,6 +186,10 @@ export default {
         },
       })
     },
+
+    setShowAnswer () {
+
+    },
   },
 }
 </script>
@@ -184,6 +201,7 @@ export default {
   padding 24px 32px
   h-box()
   align-items stretch
+  border-radius 3px
 
   @media (max-width: $small-screen)
     padding 12px
@@ -210,7 +228,7 @@ export default {
       word-wrap break-word
 
   .info
-    color rgba($md-black, .5)
+    color rgba($md-white, .5)
     font-size 0.8em
 
     >>> > span
@@ -248,8 +266,8 @@ export default {
         display none
 
   &:hover
-    background $md-grey-100
+    background $color-secondary
 
   &.answered
-    background lighten($color-primary, 90%)
+    background rgba($color-primary, .2)
 </style>

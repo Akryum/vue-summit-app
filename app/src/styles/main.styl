@@ -23,19 +23,22 @@ html
 }
 
 input,
-textarea {
-  background: white;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  border-bottom: solid 1px $md-grey-200;
-  // border-bottom: solid 2px $md-grey-300;
-  text-align: left;
+textarea
+  background darken($color-secondary, 20%)
+  color $md-white
+  display block
+  width 100%
+  box-sizing border-box
+  border solid 1px @background
+  border-radius 3px
+  text-align left
+  padding 16px
 
-  &:focus {
-    border-color: $color-primary;
-  }
-}
+  &:focus
+    border-color $color-primary
+
+  &::placeholder
+    color lighten($color-secondary, 40%)
 
 textarea {
   resize: none;
@@ -122,12 +125,12 @@ form {
 
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 input[type=number] {
-    -moz-appearance:textfield;
+-moz-appearance:textfield;
 }
 
 .actions {
@@ -269,7 +272,7 @@ input[type=number] {
   margin 12px 0
   h-box()
   align-items center
-  color $md-blue
+  color $md-cyan
   background rgba(@color, .1)
 
   &.warning

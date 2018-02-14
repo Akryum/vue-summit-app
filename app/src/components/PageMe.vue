@@ -14,7 +14,7 @@
       <div v-if="user.admin" class="admin">Admin</div>
     </div>
 
-    <div class="actions">
+    <div class="actions profile-actions">
       <BaseButton
         icon="power_settings_new"
         @click="logout"
@@ -90,10 +90,11 @@ export default {
 .profile
   v-box()
   box-center()
-  background $md-grey-100
+  background $color-secondary
+  color $md-white
   padding 32px
-  margin 12px 0
-  border-radius 3px
+  margin 12px 0 0
+  border-radius 3px 3px 0 0
 
   >>> > *
     space-between-y(8px)
@@ -107,9 +108,13 @@ export default {
 
 .actions
   h-box()
-  align-items center
+  box-center()
   padding 12px
-  background rgba($color-primary, .1)
+  background darken($color-secondary, 20%)
   margin 12px 0
   border-radius 3px
+
+  &.profile-actions
+    margin-top 0
+    border-radius 0 0 3px 3px
 </style>

@@ -79,16 +79,18 @@ export default {
 .base-button
   height 39px
   border-radius 3px
-  background $color-primary
   border solid 1px $color-primary
-  color white
   cursor pointer
   display inline-block
   text-align center
-  transition background .3s
+  transition background .3s, border-color .3s
   user-select none
   -webkit-tap-highlight-color rgba(255, 255, 255, 0)
   position relative
+
+  &.big
+    padding 16px
+    height 55px
 
   .button-badge
     pointer-events none
@@ -134,26 +136,24 @@ export default {
     padding 8px
     flex auto 0 0
 
+    &.big
+      padding 16px
+      height 55px
+      width @height
+
     .icon
       position relative
       top -2px
       font-size 24px
 
   &.secondary
-    background white
-    color $color-primary
+    background lighten($color-secondary, 20%)
+    color lighten($color-primary, 30%)
+    border-color @background
 
     &:hover
-      background lighten($color-primary, 85%)
-
-  &,
-  &.selected
-    background $color-primary
-    color $md-white
-
-    &:hover
-      background lighten($color-primary, 10%)
-      border-color @background
+      background rgba($color-primary, .3)
+      border-color $color-primary
 
   &.accent
     color white
@@ -163,10 +163,20 @@ export default {
     &:hover
       background lighten($color-accent, 10%)
 
+  &,
+  &.selected
+    background darken($color-primary, 10%)
+    color $md-white
+    border-color @background
+
+    &:hover
+      background lighten($color-primary, 10%)
+      border-color @background
+
   &[disabled='disabled']
-    background $md-grey-400
+    background darken($color-secondary, 30%)
     cursor not-allowed
-    color $md-grey-200
-    border-color $md-grey-500
+    color lighten($color-secondary, 20%)
+    border-color @background
 
 </style>

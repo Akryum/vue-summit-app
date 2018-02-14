@@ -39,6 +39,11 @@ export default {
         ...args,
       }, context)
     },
+    questionCount: (session, args, context) => {
+      return Questions.count({
+        sessionId: session.id,
+      })
+    },
   },
   Question: {
     user: (question, args, context) => {
@@ -46,6 +51,9 @@ export default {
     },
     session: (question, args, context) => {
       return Sessions.getById(question.sessionId)
+    },
+    answerCount: (question, args, context) => {
+      return Questions.countAnswers(question.id)
     },
   },
   Answer: {
@@ -62,8 +70,10 @@ export default {
 
       if (session && (
         session.public ||
-        context.user.admin ||
-        session.userId === context.user.userId
+        (context.user && (
+          context.user.admin ||
+          session.userId === context.user.userId
+        ))
       )) {
         return Questions.getMany(args, context)
       } else {
@@ -83,8 +93,10 @@ export default {
       const session = await Sessions.getById(id)
       if (session && (
         session.public ||
-        context.user.admin ||
-        session.userId === context.user.userId
+        (context.user && (
+          context.user.admin ||
+          session.userId === context.user.userId
+        ))
       )) {
         return session
       }

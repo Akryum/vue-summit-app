@@ -7,7 +7,7 @@
       <div class="actions">
         <BaseButton
           icon="close"
-          class="icon-button secondary"
+          class="icon-button secondary big"
           @click="closeSearch"
         />
       </div>
@@ -124,6 +124,8 @@ export default {
 @import "../styles/imports"
 
 .question-toolbar
+  padding 42px 32px 12px
+
   .state
     h-box()
     align-items center

@@ -3,12 +3,12 @@
     <div v-if="!user" class="content guest">
       <h1 class="app-name">
         <router-link class="link" :to="{ name: 'home' }">
-          <img class="img" src="public/logo-simple.svg">
+          <img class="img" src="/public/logo-simple.svg">
           <span>Summit</span>
         </router-link>
       </h1>
 
-      <div class="catch-phrase">Get answers.</div>
+      <div class="catch-phrase">Ask the host. Get answers.<br><router-link :to="{ name: 'about' }">More info</router-link></div>
 
       <div class="login">
         <BaseButton
@@ -23,7 +23,7 @@
     <div v-else class="content signed">
       <h1 class="app-name">
         <router-link class="link" :to="{ name: 'home' }">
-          <img class="img" src="public/logo-simple.svg">
+          <img class="img" src="/public/logo-simple.svg">
           <span>Summit</span>
         </router-link>
       </h1>
@@ -95,9 +95,11 @@ export default {
 .app-header
   text-align center
   margin-bottom 24px
+  color $md-white
 
   .content
-    background lighten($color-primary, 90%)
+    background $color-secondary
+    box-shadow 0 0 10px rgba(black, 0.05)
 
   .app-name
     flex 1
@@ -111,7 +113,6 @@ export default {
       box-center()
 
   .catch-phrase
-    color lighten($color-primary, 20%)
     margin-bottom 32px
 
   .guest
@@ -149,7 +150,6 @@ export default {
     .user
       h-box()
       box-center()
-      color rgba($md-black, .5)
       margin 0 12px
 
       .me-link

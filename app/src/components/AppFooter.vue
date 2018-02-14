@@ -1,6 +1,6 @@
 <template>
   <footer class="app-footer">
-    <div>Made with <a href="https://vuejs.org/">Vue</a> + <a href="https://apollodata.com/">Apollo</a> + ❤️</div>
+    <div>Made with <a href="https://vuejs.org/">Vue</a> + <a href="https://apollodata.com/">Apollo</a> + <router-link :to="{ name: 'about' }">❤️</router-link></div>
 
     <div>
       <a

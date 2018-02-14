@@ -120,12 +120,8 @@ export default {
 <style lang="stylus" scoped>
 @import "../styles/imports"
 
-.form,
-.pane-footer
-  padding 12px
-
 .content-input
-  margin-top 12px
+  margin-top 32px
 
 .pane-footer
   h-box()
