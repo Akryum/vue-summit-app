@@ -5,6 +5,7 @@ fragment Question on Question {
   title
   content
   votes
+  hasVoted
   answered
   pickedAnswer {
     ...Answer

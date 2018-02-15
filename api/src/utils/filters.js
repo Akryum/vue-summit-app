@@ -9,7 +9,7 @@ export function filterQuestion (question, sessionId, filter) {
     }
 
     if (typeof filter.answered !== 'undefined') {
-      return filter.answered === question.answered
+      return filter.answered ? question.pickedAnswerId !== null : question.pickedAnswerId === null
     }
 
     // if (filter.mine && context.user) {
