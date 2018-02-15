@@ -9,16 +9,3 @@ fragment Session on Session {
   }
   date
 }
-
-fragment SessionDetails on Session {
-  id
-  description
-  questionCount
-}
-
-fragment SessionAsAdmin on Session {
-  id
-  user {
-    email
-  }
-}

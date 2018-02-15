@@ -1,0 +1,5 @@
+fragment SessionDetails on Session {
+  id
+  description
+  questionCount
+}

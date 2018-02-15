@@ -104,6 +104,8 @@ export default {
               votes: 0,
               hasVoted: false,
               answered: false,
+              answerCount: 0,
+              pickedAnswer: null,
               date: Date.now(),
               user: this.user,
             },

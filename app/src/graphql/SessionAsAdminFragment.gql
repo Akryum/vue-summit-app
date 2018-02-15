@@ -1,0 +1,6 @@
+fragment SessionAsAdmin on Session {
+  id
+  user {
+    email
+  }
+}

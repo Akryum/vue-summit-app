@@ -9,6 +9,11 @@ import * as filters from './filters'
 import './components'
 import VueApollo from 'vue-apollo'
 import { createApolloClient } from './apollo'
+import marked from 'marked'
+
+marked.setOptions({
+  sanitize: true,
+})
 
 // Global filters
 for (const key in filters) {

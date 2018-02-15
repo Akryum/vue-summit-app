@@ -322,7 +322,7 @@ export default {
 
   &.emphasize
     .wrapper
-      background lighten($color-secondary, 20%)
+      background lighten($color-secondary, 10%)
 
   &.answered
     .wrapper

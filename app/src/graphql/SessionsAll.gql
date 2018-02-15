@@ -1,4 +1,5 @@
 #import "./SessionFragment.gql"
+#import "./SessionAsAdminFragment.gql"
 
 query sessionsAll {
   sessionsAll {

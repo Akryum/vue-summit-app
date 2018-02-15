@@ -26,7 +26,7 @@ function generateSelector (filter, context) {
     }
 
     if (typeof filter.answered !== 'undefined') {
-      selector.answered = filter.answered
+      selector.pickedAnswerId = filter.answered ? { $ne: null } : null
     }
 
     // if (filter.mine && context.user) {
@@ -284,6 +284,10 @@ export async function setPickedAnswer ({ id, answerId }, context) {
     processItem(question, context)
     // Access rights
     if (!context.user.admin && context.user.userId !== question.userId) return question
+
+    if (!answerId) {
+      answerId = null
+    }
 
     question.pickedAnswerId = answerId
     await questions().updateOne({
