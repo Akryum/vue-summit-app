@@ -25,13 +25,38 @@
 
     <!-- Actions -->
     <div v-if="user && !hideActions" class="actions">
+      <template v-if="user.id === question.user.id || user.admin">
+        <BaseButton
+          icon="done"
+          class="icon-button secondary"
+          :class="{ selected: isPicked }"
+          @click.stop="pickAnswer"
+        />
+      </template>
+      <div
+        v-else-if="isPicked"
+        class="picked"
+        title="This answer has been picked!"
+      >
+        <BaseIcon icon="done"/>
+      </div>
       <template v-if="user.admin">
         <BaseButton
           icon="delete"
           class="icon-button secondary"
-          @click.prevent="removeAnswer"
+          @click.stop="removeAnswer"
         />
       </template>
+    </div>
+
+    <div v-else class="guest-info">
+      <div
+        v-if="isPicked"
+        class="picked"
+        title="This answer has been picked!"
+      >
+        <BaseIcon icon="done"/>
+      </div>
     </div>
   </div>
 </template>
@@ -42,6 +67,7 @@ import marked from 'marked'
 import { cacheAnswerRemove } from '../cache/answers'
 
 import ANSWER_REMOVE_MUTATION from '../graphql/AnswerRemove.gql'
+import QUESTION_SET_PICKED_ANSWER_MUTATION from '../graphql/QuestionSetPickedAnswer.gql'
 
 export default {
   props: {
@@ -73,6 +99,10 @@ export default {
     contentHtml () {
       return marked(this.answer.content)
     },
+
+    isPicked () {
+      return this.question.pickedAnswer && this.question.pickedAnswer.id === this.answer.id
+    },
   },
 
   methods: {
@@ -96,6 +126,23 @@ export default {
             __typename: 'Answer',
             ...this.answer,
           },
+        },
+      })
+    },
+
+    pickAnswer () {
+      let newValue
+      if (this.isPicked) {
+        newValue = null
+      } else {
+        newValue = this.answer.id
+      }
+
+      this.$apollo.mutate({
+        mutation: QUESTION_SET_PICKED_ANSWER_MUTATION,
+        variables: {
+          id: this.question.id,
+          answerId: newValue,
         },
       })
     },
@@ -162,13 +209,15 @@ export default {
       @media (max-width: $small-screen)
         margin-left 12px
 
-  .answered
+  .picked
     color $color-primary
-
-    @media (max-width: $small-screen)
-      .lb
-        display none
+    font-size 24px
+    h-box()
+    box-center()
 
   &:hover
-    background $color-secondary
+    background lighten($color-secondary, 5%)
+
+  &.showcase
+    background lighten($color-secondary, 5%)
 </style>

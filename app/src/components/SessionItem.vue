@@ -41,13 +41,13 @@
           :class="{
             selected: session.public,
           }"
-          @click.prevent="togglePublic"
+          @click.prevent.stop="togglePublic"
         />
 
         <BaseButton
           icon="delete"
           class="icon-button secondary"
-          @click.prevent="removeSession"
+          @click.prevent.stop="removeSession"
         />
       </template>
     </div>

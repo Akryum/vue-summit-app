@@ -13,7 +13,7 @@ export function filterQuestion (question, sessionId, filter) {
     }
 
     // if (filter.mine && context.user) {
-    //   return context.user.userId === question.userId
+    //   return context.user.id === question.user.id
     // }
   }
 }

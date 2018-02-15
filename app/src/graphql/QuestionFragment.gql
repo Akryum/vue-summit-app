@@ -1,9 +1,14 @@
+#import "./AnswerFragment.gql"
+
 fragment Question on Question {
   id
   title
   content
   votes
   answered
+  pickedAnswer {
+    ...Answer
+  }
   answerCount
   date
   user {

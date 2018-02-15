@@ -33,13 +33,14 @@ type Question {
   votes: Int!
   # Indicates if the current logged user if any has already voted the question.
   hasVoted: Boolean
-  # Indicates if the question has been answered by the speaker.
-  answered: Boolean
   user: User
   session: Session @cacheControl(maxAge: 300)
   date: Date
+  # Indicates if the question has been answered.
+  answered: Boolean
   answers: [Answer]
   answerCount: Int
+  pickedAnswer: Answer
 }
 
 input QuestionsFilter {
@@ -99,7 +100,7 @@ type Mutation {
   # (User) Toggle the vote of current user on a question
   questionToggleVoted (id: ID!): Question
   # (User) Toggle the answered state of the question
-  questionToggleAnswered (id: ID!): Question
+  questionSetPickedAnswer (id: ID!, answerId: ID): Question
   # (Admin) Remove a question
   questionRemove (id: ID!): Question
   # (User) Add an answer to a question

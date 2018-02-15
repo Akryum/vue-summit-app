@@ -1,82 +1,98 @@
 <template>
-  <div class="question-item" :class="cssClass">
+  <div
+    class="question-item"
+    :class="cssClass"
+    @click="setShowAnswer()"
+  >
 
-    <!-- Author Avatar -->
-    <div class="avatar">
-      <img
-        v-if="question.user.avatar"
-        class="img"
-        :src="question.user.avatar"
-      >
-    </div>
-
-    <!-- Question content -->
-    <div class="content">
-      <div class="header">
-        <span class="title">{{ question.title }}</span>
+    <div class="wrapper">
+      <!-- Author Avatar -->
+      <div class="avatar">
+        <img
+          v-if="question.user.avatar"
+          class="img"
+          :src="question.user.avatar"
+        >
       </div>
 
-      <div class="text" v-html="contentHtml"/>
+      <!-- Question content -->
+      <div class="content">
+        <div class="header">
+          <span class="title">{{ question.title }}</span>
+        </div>
 
-      <div class="info">
-        <span class="author">{{ question.user.name }}</span>
-        <span class="date">
-          <BaseIcon icon="schedule"/>
-          <BaseTimeAgo :date="question.date"/>
-        </span>
-      </div>
-    </div>
+        <div class="text" v-html="contentHtml"/>
 
-    <!-- Actions -->
-    <div v-if="user && !hideActions" class="actions">
-      <div
-        v-if="question.answered"
-        class="answered"
-        title="This question has been answered"
-      >
-        <BaseIcon icon="done"/>
+        <div class="info">
+          <span class="author">{{ question.user.name }}</span>
+          <span class="date">
+            <BaseIcon icon="schedule"/>
+            <BaseTimeAgo :date="question.date"/>
+          </span>
+        </div>
       </div>
 
-      <template v-if="user.admin">
+      <!-- Actions -->
+      <div v-if="user && !hideActions" class="actions">
+        <div
+          v-if="question.answered"
+          class="answered"
+          title="This question has been answered"
+        >
+          <BaseIcon icon="done"/>
+        </div>
+
+        <template v-if="user.admin">
+          <BaseButton
+            icon="delete"
+            class="icon-button secondary"
+            @click.stop="removeQuestion"
+          />
+        </template>
+
         <BaseButton
-          icon="delete"
-          class="icon-button secondary"
-          @click.prevent="removeQuestion"
-        />
-      </template>
+          icon="comment"
+          class="secondary"
+          title="Show and add Answers"
+          :disabled="!session"
+          @click.stop="setShowAnswer()"
+        >
+          {{ question.answerCount }}
+        </BaseButton>
 
-      <BaseButton
-        icon="comment"
-        class="secondary"
-        title="Show and add comments"
-        :disabled="!session"
-        @click.prevent="setShowAnswer(question.id)"
-      >
-        {{ question.answerCount }}
-      </BaseButton>
-
-      <BaseButton
-        icon="thumb_up"
-        class="secondary"
-        :class="{
-          selected: question.hasVoted,
-        }"
-        title="Upvote"
-        @click.prevent="toggleVoted"
-      >
-        {{ question.votes }}
-      </BaseButton>
-    </div>
-
-    <div v-else class="guest-info">
-      <div v-if="question.answered" class="answered">
-        <BaseIcon icon="done"/> <span class="lb">Answered</span>
+        <BaseButton
+          icon="thumb_up"
+          class="secondary"
+          :class="{
+            selected: question.hasVoted,
+          }"
+          title="Upvote"
+          @click.stop="toggleVoted"
+        >
+          {{ question.votes }}
+        </BaseButton>
       </div>
 
-      <div class="votes">
-        <BaseIcon icon="thumb_up"/> {{ question.votes }}
+      <div v-else class="guest-info">
+        <div
+          v-if="question.answered"
+          class="answered"
+          title="Answered"
+        >
+          <BaseIcon icon="done"/>
+        </div>
+
+        <div class="votes">
+          <BaseIcon icon="thumb_up"/> {{ question.votes }}
+        </div>
       </div>
     </div>
+
+    <div
+      v-if="question.pickedAnswer"
+      class="picked-answer-preview"
+      v-html="pickedAnswerContextHtml"
+    />
   </div>
 </template>
 
@@ -86,7 +102,6 @@ import { cacheQuestionRemove } from '../cache/questions'
 import marked from 'marked'
 
 import QUESTION_TOGGLE_VOTED from '../graphql/QuestionToggleVoted.gql'
-// import QUESTION_TOGGLE_ANSWERED from '../graphql/QuestionToggleAnswered.gql'
 import QUESTION_REMOVE from '../graphql/QuestionRemove.gql'
 
 export default {
@@ -102,6 +117,11 @@ export default {
     },
 
     hideActions: {
+      type: Boolean,
+      default: false,
+    },
+
+    previewPickedAnswer: {
       type: Boolean,
       default: false,
     },
@@ -123,11 +143,16 @@ export default {
         answered: this.question.answered,
         'has-voted': this.question.hasVoted,
         'has-votes': this.question.votes > 0,
+        'previewing-answer': this.previewPickedAnswer,
       }
     },
 
     contentHtml () {
       return marked(this.question.content)
+    },
+
+    pickedAnswerContextHtml () {
+      return this.question.pickedAnswer && marked(this.question.pickedAnswer.content)
     },
   },
 
@@ -135,23 +160,6 @@ export default {
     ...mapActions('ui', [
       'setShowAnswerPane',
     ]),
-
-    // toggleAnswered () {
-    //   this.$apollo.mutate({
-    //     mutation: QUESTION_TOGGLE_ANSWERED,
-    //     variables: {
-    //       id: this.question.id,
-    //     },
-    //     optimisticResponse: {
-    //       __typename: 'Mutation',
-    //       questionToggleAnswered: {
-    //         __typename: 'Question',
-    //         id: this.question.id,
-    //         answered: !this.question.answered,
-    //       },
-    //     },
-    //   })
-    // },
 
     toggleVoted () {
       const newVotes = this.question.hasVoted
@@ -218,13 +226,15 @@ export default {
 @import "../styles/imports"
 
 .question-item
-  padding 24px 32px
-  h-box()
-  align-items stretch
-  border-radius 3px
 
-  @media (max-width: $small-screen)
-    padding 12px
+  .wrapper
+    padding 24px 32px
+    h-box()
+    align-items stretch
+    border-radius 3px
+
+    @media (max-width: $small-screen)
+      padding 12px
 
   .content
     margin 4px 0
@@ -284,8 +294,26 @@ export default {
     h-box()
     box-center()
 
+  .picked-answer-preview
+    padding 12px 106px
+    opacity .8
+    white-space nowrap
+    overflow hidden
+    text-overflow ellipsis
+    background rgba($color-primary, .1)
+    border-radius 0 0 3px 3px
+    font-style italic
+    cursor pointer
+
+    >>> *
+      display inline
+
+    @media (max-width: $small-screen)
+      padding 12px
+
   &:hover
-    background $color-secondary
+    .wrapper
+      background $color-secondary
 
   &:not(.has-votes)
     .guest-info
@@ -293,9 +321,16 @@ export default {
         opacity .3
 
   &.emphasize
-    background lighten($color-secondary, 20%)
+    .wrapper
+      background lighten($color-secondary, 20%)
 
   &.answered
-    background rgba($color-primary, .2)
+    .wrapper
+      background rgba($color-primary, .2)
+
+    &.previewing-answer
+      .wrapper
+        border-bottom-left-radius 0
+        border-bottom-right-radius 0
 
 </style>

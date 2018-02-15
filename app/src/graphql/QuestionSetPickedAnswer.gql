@@ -1,0 +1,11 @@
+#import "./AnswerFragment.gql"
+
+mutation questionSetPickedAnswer ($id: ID!, $answerId: ID) {
+  questionSetPickedAnswer(id: $id, answerId: $answerId) {
+    id
+    answered
+    pickedAnswer {
+      ...Answer
+    }
+  }
+}

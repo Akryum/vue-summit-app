@@ -1,6 +1,0 @@
-mutation questionToggleAnswered ($id: ID!) {
-  questionToggleAnswered(id: $id) {
-    id
-    answered
-  }
-}

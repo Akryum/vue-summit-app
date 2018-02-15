@@ -14,7 +14,7 @@ function generateSelector (filter, context) {
     content: 1,
     votes: 1,
     votesList: 1,
-    answered: 1,
+    pickedAnswerId: 1,
     date: 1,
     userId: 1,
     answers: 1,
@@ -112,8 +112,8 @@ export async function addOne ({ sessionId, input }, context) {
     content: input.content.substr(0, 500),
     votes: 0,
     votesList: [],
-    answered: false,
     answers: [],
+    pickedAnswerId: null,
     userId: context.user.userId,
     date: new Date(),
   }
@@ -232,12 +232,25 @@ export async function updateAnswerDetails ({ questionId, id, input }, context) {
   throw new Error(404)
 }
 
+export async function getAnswerById ({ questionId, id }, context) {
+  const oid = ObjectId(questionId)
+  const question = await questions().findOne({
+    _id: oid,
+  })
+  if (question) {
+    return question.answers.find(
+      q => q.id === id
+    )
+  }
+}
+
 export async function toggleVote ({ id }, context) {
   const oid = ObjectId(id)
   const question = await questions().findOne({
     _id: oid,
   })
   if (question) {
+    processItem(question, context)
     const userId = context.user.userId
     const index = question.votesList.indexOf(userId)
     const operation = {}
@@ -256,30 +269,28 @@ export async function toggleVote ({ id }, context) {
     await questions().updateOne({
       _id: oid,
     }, operation)
-    processItem(question, context)
     return question
   } else {
     throw new Error(404)
   }
 }
 
-export async function toggleAnswered ({ id }, context) {
+export async function setPickedAnswer ({ id, answerId }, context) {
   const oid = ObjectId(id)
   const question = await questions().findOne({
     _id: oid,
   })
   if (question) {
+    processItem(question, context)
     // Access rights
     if (!context.user.admin && context.user.userId !== question.userId) return question
 
-    const newValue = !question.answered
-    question.answered = newValue
+    question.pickedAnswerId = answerId
     await questions().updateOne({
       _id: oid,
     }, {
-      $set: { answered: newValue },
+      $set: { pickedAnswerId: answerId },
     })
-    processItem(question, context)
     return question
   } else {
     throw new Error(404)

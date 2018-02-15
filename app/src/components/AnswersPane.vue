@@ -11,6 +11,17 @@
       class="item emphasize"
     />
 
+    <template v-if="question.pickedAnswer">
+      <AnswerItem
+        :answer="question.pickedAnswer"
+        :question="question"
+        hide-actions
+        class="item showcase"
+      />
+
+      <div class="more-separator">More answers</div>
+    </template>
+
     <ApolloQuery
       :query="require('../graphql/QuestionAnswers.gql')"
       :variables="{
@@ -51,7 +62,6 @@
           <AnswerItem
             v-for="answer of data.question.answers"
             :key="answer.id"
-
             :answer="answer"
             :question="question"
             class="item"
@@ -229,6 +239,11 @@ export default {
 
 .item
   margin 0 32px 12px
+
+.more-separator
+  text-align center
+  color $color-accent
+  margin 42px 32px 12px
 
 .pane-footer,
 .actions

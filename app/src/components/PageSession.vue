@@ -67,6 +67,7 @@
         :key="question.id"
         :question="question"
         :session="session"
+        preview-picked-answer
       />
     </div>
   </BasePage>
@@ -81,6 +82,7 @@ import QuestionItem from './QuestionItem.vue'
 import QuestionToolbar from './QuestionToolbar.vue'
 
 import SESSION_QUERY from '../graphql/Session.gql'
+import SESSION_UPDATED from '../graphql/SessionDetailsUpdated.gql'
 import QUESTIONS_QUERY from '../graphql/Questions.gql'
 import QUESTION_ADDED from '../graphql/QuestionAdded.gql'
 import QUESTION_UPDATED from '../graphql/QuestionUpdated.gql'
@@ -115,6 +117,10 @@ export default {
 
     ...mapGetters('user', [
       'user',
+    ]),
+
+    ...mapGetters('ui', [
+      'showAnswerPane',
     ]),
 
     emptyMessage () {
@@ -152,6 +158,17 @@ export default {
           id: route.params.sessionId,
         }
       },
+      subscribeToMore: [
+        // Updated
+        {
+          document: SESSION_UPDATED,
+          variables () {
+            return {
+              id: this.sessionId,
+            }
+          },
+        },
+      ],
     },
 
     questions: {
@@ -181,8 +198,14 @@ export default {
               filter: this.requestFilter,
             }
           },
-          result (data) {
-            console.log(data)
+          result (previousResult, { subscriptionData }) {
+            const question = subscriptionData.data.questionUpdated
+            if (this.showAnswerPane && this.showAnswerPane.question.id === question.id) {
+              this.setShowAnswerPane({
+                session: this.session,
+                question: Object.assign({}, this.showAnswerPane.question, question),
+              })
+            }
           },
         },
         // Added
@@ -242,6 +265,10 @@ export default {
   methods: {
     ...mapActions('questions', [
       'setSessionId',
+    ]),
+
+    ...mapActions('ui', [
+      'setShowAnswerPane',
     ]),
 
     refresh () {

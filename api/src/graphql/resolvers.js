@@ -60,6 +60,15 @@ export default {
     answerCount: (question, args, context) => {
       return Questions.countAnswers(question.id)
     },
+    answered: question => !!question.pickedAnswerId,
+    pickedAnswer: (question, args, context) => {
+      if (question.pickedAnswerId) {
+        return Questions.getAnswerById({
+          questionId: question.id,
+          id: question.pickedAnswerId,
+        }, context)
+      }
+    },
   },
 
   Answer: {
@@ -159,8 +168,8 @@ export default {
       pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return question
     }),
-    questionToggleAnswered: secure(async (root, args, context) => {
-      const question = await Questions.toggleAnswered(args, context)
+    questionSetPickedAnswer: secure(async (root, args, context) => {
+      const question = await Questions.setPickedAnswer(args, context)
       pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return question
     }),

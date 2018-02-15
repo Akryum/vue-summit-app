@@ -1,3 +1,5 @@
+#import "./AnswerFragment.gql"
+
 subscription questionUpdated ($sessionId: ID!, $filter: QuestionsFilter!) {
   questionUpdated (sessionId: $sessionId, filter: $filter) {
     id
@@ -6,5 +8,8 @@ subscription questionUpdated ($sessionId: ID!, $filter: QuestionsFilter!) {
     votes
     answered
     answerCount
+    pickedAnswer {
+      ...Answer
+    }
   }
 }
