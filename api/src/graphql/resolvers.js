@@ -172,19 +172,18 @@ export default {
 
     answerAdd: secure(async (root, args, context) => {
       const { answer, question } = await Questions.addAnswer(args, context)
-      pubsub.publish(PubSubChannels.ANSWER_ADDED_TOPIC, { answerAdded: answer, questionId: args.questionId, context })
-      console.log(question)
+      pubsub.publish(PubSubChannels.ANSWER_ADDED_TOPIC, { answerAdded: answer, questionId: question.id, context })
       pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return answer
     }),
     answerUpdate: secure(async (root, args, context) => {
-      const { answer } = await Questions.updateAnswerDetails(args, context)
-      pubsub.publish(PubSubChannels.ANSWER_UPDATED_TOPIC, { answerUpdated: answer, questionId: args.questionId, context })
+      const { answer, question } = await Questions.updateAnswerDetails(args, context)
+      pubsub.publish(PubSubChannels.ANSWER_UPDATED_TOPIC, { answerUpdated: answer, questionId: question.id, context })
       return answer
     }),
     answerRemove: secure(async (root, args, context) => {
       const { answer, question } = await Questions.removeAnswer(args, context)
-      pubsub.publish(PubSubChannels.ANSWER_REMOVED_TOPIC, { answerRemoved: answer, questionId: args.questionId, context })
+      pubsub.publish(PubSubChannels.ANSWER_REMOVED_TOPIC, { answerRemoved: answer, questionId: question.id, context })
       pubsub.publish(PubSubChannels.QUESTION_UPDATED_TOPIC, { questionUpdated: question, context })
       return answer
     }, true),

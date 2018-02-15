@@ -1,7 +1,9 @@
-#import "./SessionFragment.gql"
-
 subscription sessionUpdated {
   sessionUpdated {
-    ...Session
+    id
+    title
+    description
+    public
+    questionCount
   }
 }

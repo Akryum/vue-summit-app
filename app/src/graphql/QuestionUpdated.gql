@@ -1,7 +1,10 @@
-#import "./QuestionFragment.gql"
-
 subscription questionUpdated ($sessionId: ID!, $filter: QuestionsFilter!) {
   questionUpdated (sessionId: $sessionId, filter: $filter) {
-    ...Question
+    id
+    title
+    content
+    votes
+    answered
+    answerCount
   }
 }

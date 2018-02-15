@@ -18,6 +18,27 @@
       }"
       fetch-policy="cache-and-network"
     >
+      <ApolloSubscribeToMore
+        :document="require('../graphql/AnswerAdded.gql')"
+        :variables="{
+          questionId: question.id
+        }"
+        :update-query="onAnswerAdded"
+      />
+      <ApolloSubscribeToMore
+        :document="require('../graphql/AnswerRemoved.gql')"
+        :variables="{
+          questionId: question.id
+        }"
+        :update-query="onAnswerRemoved"
+      />
+      <ApolloSubscribeToMore
+        :document="require('../graphql/AnswerUpdated.gql')"
+        :variables="{
+          questionId: question.id
+        }"
+      />
+
       <template slot-scope="{ result: { data, loading, error } }">
         <BaseLineLoading v-if="loading"/>
 
@@ -30,6 +51,7 @@
           <AnswerItem
             v-for="answer of data.question.answers"
             :key="answer.id"
+
             :answer="answer"
             :question="question"
             class="item"
@@ -88,7 +110,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { cacheAnswerAdd } from '../cache/answers.js'
+import { cacheAnswerAdd, cacheAnswerAddToList, cacheAnswerRemoveFromList } from '../cache/answers.js'
 
 import AnswerItem from './AnswerItem.vue'
 import QuestionItem from './QuestionItem.vue'
@@ -161,20 +183,42 @@ export default {
               questionId: this.question.id,
             }, answerAdd)
           },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            answerAdd: {
-              __typename: 'Answer',
-              id: '',
-              content: this.content,
-              user: this.user,
-              date: Date.now(),
-            },
-          },
+          // optimisticResponse: {
+          //   __typename: 'Mutation',
+          //   answerAdd: {
+          //     __typename: 'Answer',
+          //     id: '',
+          //     content: this.content,
+          //     user: this.user,
+          //     date: Date.now(),
+          //   },
+          // },
         })
 
         this.writeAnswer = false
       }
+    },
+
+    onAnswerAdded (previousResult, { subscriptionData }) {
+      const newResult = {
+        question: {
+          ...previousResult.question,
+          answers: [...previousResult.question.answers],
+        },
+      }
+      cacheAnswerAddToList(newResult.question.answers, subscriptionData.data.answerAdded)
+      return newResult
+    },
+
+    onAnswerRemoved (previousResult, { subscriptionData }) {
+      const newResult = {
+        question: {
+          ...previousResult.question,
+          answers: [...previousResult.question.answers],
+        },
+      }
+      cacheAnswerRemoveFromList(newResult.question.answers, subscriptionData.data.answerRemoved)
+      return newResult
     },
   },
 }
