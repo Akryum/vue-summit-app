@@ -1,10 +1,10 @@
 {
-  "name": "devfest-summit-api",
-  "alias": "devfest-summit-api",
+  "name": "vue-summit-api",
+  "alias": "vue-summit-api",
   "env": {
     "NEDB_PATH": "/tmp",
-    "CLIENT_ORIGIN": "https://devfest-summit.now.sh",
-    "PUBLIC_URL": "https://devfest-summit-api.now.sh",
+    "CLIENT_ORIGIN": "https://vue-summit.now.sh",
+    "PUBLIC_URL": "https://vue-summit-api.now.sh",
     "COOKIE_DOMAIN": ".now.sh"
   }
 }

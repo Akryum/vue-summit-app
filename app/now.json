@@ -1,7 +1,7 @@
 {
-  "name": "devfest-summit",
-  "alias": "devfest-summit",
+  "name": "vue-summit",
+  "alias": "vue-summit",
   "env": {
-    "ENDPOINT": "https://devfest-summit-api.now.sh"
+    "ENDPOINT": "https://vue-summit-api.now.sh"
   }
 }

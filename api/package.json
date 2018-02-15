@@ -1,6 +1,6 @@
 {
-  "name": "nantes-api",
-  "version": "0.0.1",
+  "name": "vue-summit-api",
+  "version": "0.2.0",
   "description": "",
   "scripts": {
     "dev": "nodemon src/index.js --exec babel-node",

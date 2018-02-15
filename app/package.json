@@ -1,17 +1,20 @@
 {
-  "name": "chapter7-part1",
+  "name": "vue-summit-app",
   "description": "A Vue.js project",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "author": "Guillaume Chau <guillaume.b.chau@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "node server",
-    "build": "rimraf dist && npm run build:client && npm run build:server && npm run build:error",
-    "build:client": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.client.config.js",
-    "build:server": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.server.config.js",
-    "build:error": "cross-env NODE_ENV=production webpack --progress --hide-modules --config build/webpack.error.config.js",
+    "build": "rimraf dist && npm run build:server && npm run build:error && npm run build:client",
+    "build:client": "cross-env NODE_ENV=production webpack --hide-modules --config build/webpack.client.config.js",
+    "build:server": "cross-env NODE_ENV=production webpack --hide-modules --config build/webpack.server.config.js",
+    "build:error": "cross-env NODE_ENV=production webpack --hide-modules --config build/webpack.error.config.js",
     "start": "cross-env NODE_ENV=production node server",
     "eslint": "eslint --ext .js,.jsx,.vue src"
+  },
+  "engines": {
+    "node": ">=8.x"
   },
   "dependencies": {
     "apollo-cache-inmemory": "^1.0.0",
@@ -33,7 +36,7 @@
     "serve-favicon": "^2.4.5",
     "subscriptions-transport-ws": "^0.9.5",
     "vue": "^2.5.2",
-    "vue-apollo": "^3.0.0-alpha.1",
+    "vue-apollo": "^3.0.0-beta.4",
     "vue-i18n": "^7.3.1",
     "vue-router": "^3.0.1",
     "vue-server-renderer": "^2.5.2",
