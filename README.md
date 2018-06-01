@@ -4,6 +4,15 @@
 
 <h1 align="center">Summit</h1>
 
+
+<p align="center">
+  <a href="https://www.patreon.com/akryum" target="_blank">
+    <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patreon">
+  </a>
+</p>
+
+<br>
+
 > Ask questions to the speaker and upvote them!
 
 The [backend api](./api) uses Apollo GraphQL tools and an express nodejs server.
